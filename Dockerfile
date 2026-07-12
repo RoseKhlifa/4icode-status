@@ -20,6 +20,11 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Docker 场景使用 standalone (单文件 server.js), 需要在 build 时启用
+ENV STATUS_STANDALONE=1
+# 反代场景; 如果 Docker 直接暴露端口而不走 nginx 子路径, 删掉这行
+ARG STATUS_BASE_PATH=/status
+ENV STATUS_BASE_PATH=${STATUS_BASE_PATH}
 RUN npm run build
 
 # ------- Stage 4: 运行时 -------
