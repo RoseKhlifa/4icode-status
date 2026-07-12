@@ -51,7 +51,8 @@ error.log
 .mcp.json
 
 # 4i.codes 状态: 探测数据 + 私密配置
-/data/
+# 注意: 用 /data/* 而不是 /data/, 才能让下方的 ! 白名单生效
+/data/*
 !/data/providers.example.json
 pnpm-lock.yaml
 

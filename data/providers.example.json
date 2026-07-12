@@ -1,0 +1,38 @@
+[
+  {
+    "name": "GPT-5 · 主渠道",
+    "type": "openai",
+    "endpoint": "https://api.4i.codes/v1/chat/completions",
+    "model": "gpt-5-mini",
+    "apiKey": "sk-4icode-status-probe-CHANNEL-A",
+    "groupName": "主渠道",
+    "enabled": true
+  },
+  {
+    "name": "GPT-5 · 备用渠道",
+    "type": "openai",
+    "endpoint": "https://api.4i.codes/v1/chat/completions",
+    "model": "gpt-5-mini",
+    "apiKey": "sk-4icode-status-probe-CHANNEL-B",
+    "groupName": "备用渠道",
+    "enabled": true
+  },
+  {
+    "name": "Claude Sonnet 5 · 主渠道",
+    "type": "openai",
+    "endpoint": "https://api.4i.codes/v1/chat/completions",
+    "model": "claude-sonnet-5",
+    "apiKey": "sk-4icode-status-probe-CHANNEL-A",
+    "groupName": "主渠道",
+    "enabled": true
+  },
+  {
+    "name": "Gemini 3 Pro · 主渠道",
+    "type": "openai",
+    "endpoint": "https://api.4i.codes/v1/chat/completions",
+    "model": "gemini-3-pro",
+    "apiKey": "sk-4icode-status-probe-CHANNEL-A",
+    "groupName": "主渠道",
+    "enabled": true
+  }
+]
