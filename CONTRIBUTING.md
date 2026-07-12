@@ -23,12 +23,18 @@ app/                    Next.js 页面 (改这里改 UI 路由)
 └── api/dashboard/      ← 前端数据接口
 
 components/
-├── top-bar.tsx         ← 4i 胶囊顶栏 (与 landing/docs 保持一致)
-├── dashboard-view.tsx  ← 35KB 主视图,来自 check-cx,尽量别动
-├── provider-card.tsx   ← 单卡片 (状态、延迟、时间线)
-├── status-timeline.tsx ← 时间线可视化
-├── availability-stats.tsx  ← 7/15/30 天可用率
-└── ui/                 ← shadcn 生成的原子组件
+├── top-bar.tsx           ← 4i 胶囊顶栏 (与 landing/docs 保持一致)
+├── dashboard-bootstrap.tsx  ← 首屏加载 + SWR 引导
+├── dashboard-view.tsx    ← 主视图容器 (DashHeader + FilterBar + StatusTable)
+├── dashboard-skeleton.tsx ← 骨架屏
+├── dash-header.tsx       ← 顶部品牌横幅 + 正常/异常计数徽章
+├── filter-bar.tsx        ← 分类/服务商/服务/通道下拉 + 时间窗口 tabs
+├── status-table.tsx      ← 主表格 (9 列)
+├── status-strip.tsx      ← 90 格监控条 (绿/黄/红/灰)
+├── vendor-badge.tsx      ← 服务商小徽章 (CC/CX/GM/OA/AN)
+├── provider-icon.tsx     ← lobehub 官方图标 (备用)
+├── client-time.tsx       ← 客户端时间格式化 (避免 SSR 时区错乱)
+└── ui/                   ← shadcn 生成的原子组件 (badge/card/table/hover-card 等)
 
 lib/
 ├── core/

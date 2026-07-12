@@ -70,6 +70,15 @@ interface RawProviderEntry {
   requestHeaders?: Record<string, string> | null;
   request_headers?: Record<string, string> | null;
   metadata?: Record<string, unknown> | null;
+
+  // 4i.codes 表格视图扩展字段 (全部可选)
+  category?: string;
+  vendor?: string;
+  service?: string;
+  models?: string[];
+  priceRatio?: string;
+  priceHint?: string;
+  iconKey?: string;
 }
 
 function resolveConfigPath(): string {
@@ -164,6 +173,17 @@ function parseEntries(raw: string): ProviderConfig[] {
       requestHeaders: entry.requestHeaders ?? entry.request_headers ?? null,
       metadata: entry.metadata ?? null,
       groupName,
+
+      // 表格视图扩展 (未提供时用 null, 前端会用 fallback)
+      category: entry.category?.trim() || null,
+      vendor: entry.vendor?.trim() || null,
+      service: entry.service?.trim() || name,
+      models: Array.isArray(entry.models) && entry.models.length > 0
+        ? entry.models.map((m) => String(m).trim()).filter(Boolean)
+        : [model],
+      priceRatio: entry.priceRatio?.trim() || null,
+      priceHint: entry.priceHint?.trim() || null,
+      iconKey: entry.iconKey?.trim() || null,
     });
   }
   return result;
@@ -208,6 +228,13 @@ export async function loadProviderConfigsFromDB(options?: {
       endpoint: c.endpoint,
       model: c.model,
       groupName: c.groupName ?? null,
+      category: c.category ?? null,
+      vendor: c.vendor ?? null,
+      service: c.service ?? null,
+      models: c.models ?? null,
+      priceRatio: c.priceRatio ?? null,
+      priceHint: c.priceHint ?? null,
+      iconKey: c.iconKey ?? null,
     }))
   );
 

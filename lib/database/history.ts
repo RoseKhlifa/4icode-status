@@ -45,6 +45,15 @@ interface ProviderMeta {
   endpoint: string;
   model: string;
   groupName: string | null;
+
+  // 4i.codes 表格视图扩展 (可选)
+  category?: string | null;
+  vendor?: string | null;
+  service?: string | null;
+  models?: string[] | null;
+  priceRatio?: string | null;
+  priceHint?: string | null;
+  iconKey?: string | null;
 }
 
 let providerMetaLookup: Map<string, ProviderMeta> = new Map();
@@ -68,6 +77,14 @@ function rowToResult(row: HistoryRow): CheckResult | null {
     checkedAt: row.checked_at,
     message: row.message ?? "",
     groupName: meta.groupName,
+
+    category: meta.category ?? null,
+    vendor: meta.vendor ?? null,
+    service: meta.service ?? null,
+    models: meta.models ?? null,
+    priceRatio: meta.priceRatio ?? null,
+    priceHint: meta.priceHint ?? null,
+    iconKey: meta.iconKey ?? null,
   };
 }
 
