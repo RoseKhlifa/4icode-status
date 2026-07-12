@@ -62,7 +62,18 @@ export function StatusTable({
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-white/40 backdrop-blur">
-      <div className="overflow-x-auto">
+      {/* 手机上表格必然横向滚动, 加左右阴影提示还有内容 */}
+      <div
+        className="overflow-x-auto"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,252,246,0.95) 30%, rgba(255,252,246,0)), linear-gradient(to right, rgba(255,252,246,0), rgba(255,252,246,0.95) 70%), radial-gradient(farthest-side at 0 50%, rgba(0,0,0,0.12), rgba(0,0,0,0)), radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,0.12), rgba(0,0,0,0))",
+          backgroundPosition: "0 0, 100% 0, 0 0, 100% 0",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "40px 100%, 40px 100%, 14px 100%, 14px 100%",
+          backgroundAttachment: "local, local, scroll, scroll",
+        }}
+      >
         <table className="w-full min-w-[1180px] table-fixed border-collapse text-sm">
           <colgroup>
             <col className="w-[10%]" /> {/* 服务商 */}

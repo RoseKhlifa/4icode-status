@@ -56,9 +56,9 @@ export function FilterBar(props: FilterBarProps) {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-border/50 bg-white/40 px-4 py-3 backdrop-blur">
-      {/* 左: 漏斗图标 + 下拉 */}
-      <div className="flex items-center gap-2 pl-1 text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border/50 bg-white/40 px-3 py-2.5 backdrop-blur sm:gap-2.5 sm:px-4 sm:py-3">
+      {/* 左: 漏斗图标 + 下拉, 手机隐藏漏斗省空间 */}
+      <div className="hidden items-center gap-2 pl-1 text-muted-foreground sm:flex">
         <Filter className="h-4 w-4" />
       </div>
 

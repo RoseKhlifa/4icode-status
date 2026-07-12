@@ -40,20 +40,20 @@ export function DashHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       {/* 左: 品牌 */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-foreground text-background shadow-sm">
-          <Activity className="h-5 w-5" />
+      <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-foreground text-background shadow-sm sm:h-11 sm:w-11">
+          <Activity className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
-        <div className="flex flex-col leading-tight">
+        <div className="flex min-w-0 flex-col leading-tight">
           <h1
             className={cn(
-              "text-2xl font-black tracking-tight sm:text-3xl",
+              "truncate text-lg font-black tracking-tight sm:text-2xl md:text-3xl",
               "bg-gradient-to-r from-[#161311] via-[#2a221a] to-[#4e4030] bg-clip-text text-transparent"
             )}
           >
             {t.header.title}
           </h1>
-          <p className="text-xs text-muted-foreground sm:text-sm">
+          <p className="hidden text-[11px] text-muted-foreground sm:block sm:text-sm">
             {t.header.subtitle}
           </p>
         </div>
