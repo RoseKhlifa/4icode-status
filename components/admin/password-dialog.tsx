@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { apiUrl } from "@/lib/utils/api-url";
 
 interface Props {
   onClose: () => void;
@@ -36,7 +37,7 @@ export function PasswordDialog({ onClose, onDone, onError }: Props) {
     }
     setPending(true);
     try {
-      const res = await fetch("/api/admin/password", {
+      const res = await fetch(apiUrl("/api/admin/password"), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword: current, newPassword: next }),

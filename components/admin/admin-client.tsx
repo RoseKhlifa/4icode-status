@@ -7,6 +7,7 @@ import { ProviderEditor } from "@/components/admin/provider-editor";
 import { PasswordDialog } from "@/components/admin/password-dialog";
 import { VendorBadge } from "@/components/vendor-badge";
 import { cn } from "@/lib/utils";
+import { apiUrl } from "@/lib/utils/api-url";
 
 interface Props {
   initialProviders: ProviderSummary[];
@@ -26,7 +27,7 @@ export function AdminClient({ initialProviders }: Props) {
 
   const reload = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/providers", {
+      const res = await fetch(apiUrl("/api/admin/providers"), {
         cache: "no-store",
         credentials: "same-origin",
       });
@@ -42,7 +43,7 @@ export function AdminClient({ initialProviders }: Props) {
     async (p: ProviderSummary) => {
       if (!confirm(`确认删除 [${p.name}] (${p.groupName ?? "默认"} · ${p.model})?`)) return;
       try {
-        const res = await fetch("/api/admin/providers", {
+        const res = await fetch(apiUrl("/api/admin/providers"), {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -61,11 +62,11 @@ export function AdminClient({ initialProviders }: Props) {
   );
 
   const handleLogout = useCallback(async () => {
-    await fetch("/api/admin/logout", {
+    await fetch(apiUrl("/api/admin/logout"), {
       method: "POST",
       credentials: "same-origin",
     });
-    window.location.href = "/admin/login";
+    window.location.href = apiUrl("/admin/login");
   }, []);
 
   const grouped = useMemo(() => {

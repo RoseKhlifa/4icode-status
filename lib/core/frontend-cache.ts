@@ -8,6 +8,7 @@
  */
 
 import type { DashboardData, AvailabilityPeriod } from "../types";
+import { apiUrl } from "../utils/api-url";
 
 /** 缓存有效期默认值：5 分钟 */
 const DEFAULT_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -186,7 +187,7 @@ async function fetchFromNetwork(
     headers["If-None-Match"] = etag;
   }
 
-  const response = await fetch(`/api/dashboard?${params.toString()}`, {
+  const response = await fetch(apiUrl(`/api/dashboard?${params.toString()}`), {
     headers,
   });
 

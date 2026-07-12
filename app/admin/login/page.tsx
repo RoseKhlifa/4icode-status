@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Lock } from "lucide-react";
+import { apiUrl } from "@/lib/utils/api-url";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
@@ -13,7 +14,7 @@ export default function AdminLoginPage() {
     setError(null);
     startTransition(async () => {
       try {
-        const res = await fetch("/api/admin/login", {
+        const res = await fetch(apiUrl("/api/admin/login"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ password }),
@@ -23,7 +24,7 @@ export default function AdminLoginPage() {
           // 硬跳转 (整页刷新) 保证浏览器把新落地的 cookie 带过去
           // 用 router.push 会走客户端跳转, 时序上 server component 可能
           // 早于 cookie 落地就跑 requireAuth() 又被 redirect 回来
-          window.location.href = "/admin";
+          window.location.href = apiUrl("/admin");
           return;
         }
         const data = (await res.json().catch(() => ({}))) as { error?: string };

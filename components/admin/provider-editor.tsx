@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 import type { ProviderSummary } from "@/lib/admin/providers-store";
 import { cn } from "@/lib/utils";
+import { apiUrl } from "@/lib/utils/api-url";
 
 interface Props {
   existing?: ProviderSummary;
@@ -110,7 +111,7 @@ export function ProviderEditor({ existing, onClose, onSaved, onError }: Props) {
           is_maintenance: isMaintenance,
         },
       };
-      const res = await fetch("/api/admin/providers", {
+      const res = await fetch(apiUrl("/api/admin/providers"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
