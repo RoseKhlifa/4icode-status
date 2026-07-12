@@ -14,6 +14,7 @@
  */
 
 import { cn } from "@/lib/utils";
+import { assetPath } from "@/lib/utils/api-url";
 
 interface VendorPreset {
   label: string;
@@ -127,7 +128,7 @@ export function VendorBadge({ iconKey, vendor, className }: VendorBadgeProps) {
       {p.icon ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={p.icon}
+          src={assetPath(p.icon)}
           alt=""
           aria-hidden="true"
           className="h-3.5 w-3.5"

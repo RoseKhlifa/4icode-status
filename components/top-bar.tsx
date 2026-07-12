@@ -7,6 +7,7 @@
  */
 
 import { useLocale } from "@/lib/i18n/context";
+import { assetPath, apiUrl } from "@/lib/utils/api-url";
 
 const NAV_LABELS = {
   zh: { home: "首页", doc: "文档", status: "状态", contact: "联系", about: "关于" },
@@ -23,7 +24,7 @@ export function TopBar() {
         <a className="ficodes-topbar-brand" href="https://4i.codes">
           <img
             className="ficodes-topbar-logo"
-            src="/logo.png"
+            src={assetPath("/logo.png")}
             alt="4i.codes"
           />
           <span className="ficodes-topbar-brand-name">4i.codes</span>
@@ -31,7 +32,7 @@ export function TopBar() {
         <nav className="ficodes-topbar-nav" aria-label="Primary">
           <a href="https://4i.codes">{l.home}</a>
           <a href="https://4i.codes/doc/">{l.doc}</a>
-          <a href="/" className="is-active">
+          <a href={apiUrl("/")} className="is-active">
             {l.status}
           </a>
           <a href="https://4i.codes/contact">{l.contact}</a>

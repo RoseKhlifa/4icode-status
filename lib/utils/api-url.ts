@@ -32,3 +32,14 @@ export function apiUrl(path: string): string {
   if (!path.startsWith("/")) path = "/" + path;
   return base + path;
 }
+
+/**
+ * public/ 里的静态资源路径拼接
+ * assetPath("/logo.png") -> "/status/logo.png" 生产 / "/logo.png" dev
+ *
+ * 注意: Next.js `<Image>` 组件会自动加 basePath, 但普通 <img src="/xxx">
+ * 和 CSS url() 不会. 这个 helper 用于所有 public 资源手动引用.
+ */
+export function assetPath(path: string): string {
+  return apiUrl(path);
+}

@@ -6,10 +6,16 @@
 
 /* ============================================================
  * 4i.codes 本地字体
+ *
+ * ⚠ CSS 里 url() 没法通过 JS helper 加 basePath. 生产环境挂在
+ * /status 反代时, 硬编码带上 /status 前缀; 本地 dev 可以在 nginx
+ * 层加一条 /fonts/ 兜底 rewrite 到 /status/fonts/.
+ *
+ * 若将来 basePath 有变, 记得同步这里.
  * ============================================================ */
 @font-face {
   font-family: "JetBrains Mono Local";
-  src: url("/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+  src: url("/status/fonts/JetBrainsMono-Regular.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -17,7 +23,7 @@
 
 @font-face {
   font-family: "HarmonyOS Sans SC Local";
-  src: url("/fonts/HarmonyOS_SansSC_Regular.ttf") format("truetype");
+  src: url("/status/fonts/HarmonyOS_SansSC_Regular.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
