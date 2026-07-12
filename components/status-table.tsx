@@ -68,32 +68,26 @@ export function StatusTable({
             <col className="w-[10%]" /> {/* 服务商 */}
             <col className="w-[7%]" /> {/* 服务 badge */}
             <col className="w-[9%]" /> {/* 通道 */}
-            <col className="w-[16%]" /> {/* 模型 */}
+            <col className="w-[15%]" /> {/* 模型 */}
             <col className="w-[6%]" /> {/* 价格 */}
-            <col className="w-[5%]" /> {/* 收录 */}
+            <col className="w-[7%]" /> {/* 收录天数 */}
             <col className="w-[7%]" /> {/* 可用率 */}
             <col className="w-[9%]" /> {/* 最后监测 */}
             <col /> {/* 趋势条: 占满剩余 */}
           </colgroup>
           <thead className="bg-white/70 backdrop-blur">
-            <tr className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+            <tr className="h-9 text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
               <Th className="pl-4">服务商</Th>
               <Th>服务</Th>
               <Th>通道</Th>
               <Th>模型</Th>
               <Th>价格</Th>
-              <Th className="text-center">
-                收录
-                <div className="text-[9px] normal-case tracking-normal opacity-70">天数</div>
-              </Th>
+              <Th className="text-center">收录天数</Th>
               <Th className="text-right">可用率</Th>
-              <Th>
-                最后
-                <div className="text-[9px] normal-case tracking-normal opacity-70">监测</div>
-              </Th>
+              <Th>最后监测</Th>
               <Th className="pr-4">
                 可用率趋势
-                <span className="ml-1 text-[9px] normal-case tracking-normal opacity-70">
+                <span className="ml-1.5 text-[9.5px] tracking-normal opacity-70">
                   [{PERIOD_LABEL[selectedPeriod]}]
                 </span>
               </Th>
@@ -126,7 +120,7 @@ function Th({
   return (
     <th
       className={cn(
-        "border-b border-border/40 px-2 py-2 text-left align-bottom font-semibold",
+        "whitespace-nowrap border-b border-border/40 px-2 text-left align-middle font-semibold",
         className
       )}
     >
