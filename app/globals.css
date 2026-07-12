@@ -1,0 +1,304 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+ * 4i.codes 本地字体
+ * ============================================================ */
+@font-face {
+  font-family: "JetBrains Mono Local";
+  src: url("/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HarmonyOS Sans SC Local";
+  src: url("/fonts/HarmonyOS_SansSC_Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "JetBrains Mono Local", "HarmonyOS Sans SC Local", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono Local", "HarmonyOS Sans SC Local", "Consolas", "Menlo", "Monaco", "Courier New", monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-heading: var(--font-mono);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ============================================================
+ * 4i.codes 米黄墨色调 (与首页/文档保持一致)
+ *   paper #efe8df   ink #161311
+ * ============================================================ */
+:root {
+  --radius: 0.625rem;
+
+  /* 品牌基调 */
+  --paper: #efe8df;
+  --paper-deep: #e6ddd0;
+  --paper-warm: rgba(252, 247, 240, 0.74);
+  --ink: #161311;
+  --ink-soft: rgba(22, 19, 17, 0.72);
+  --line: rgba(49, 42, 35, 0.18);
+  --line-soft: rgba(49, 42, 35, 0.08);
+
+  /* shadcn tokens 映射到 4i.codes 调色板 */
+  --background: #efe8df;
+  --foreground: #161311;
+
+  --card: rgba(255, 252, 246, 0.86);
+  --card-foreground: #161311;
+  --popover: rgba(255, 252, 246, 0.98);
+  --popover-foreground: #161311;
+
+  --primary: #161311;
+  --primary-foreground: #f7f1e8;
+
+  --secondary: rgba(35, 28, 21, 0.08);
+  --secondary-foreground: #2a221a;
+
+  --muted: rgba(35, 28, 21, 0.06);
+  --muted-foreground: rgba(22, 19, 17, 0.58);
+
+  --accent: rgba(35, 28, 21, 0.08);
+  --accent-foreground: #161311;
+
+  /* 语义色: 与米色背景协调的柔和调 */
+  --destructive: oklch(0.55 0.16 25);
+  --border: rgba(35, 28, 21, 0.14);
+  --input: rgba(35, 28, 21, 0.14);
+  --ring: rgba(22, 19, 17, 0.32);
+
+  /* 图表色板: 墨色系为主 */
+  --chart-1: #2a221a;
+  --chart-2: #4e4030;
+  --chart-3: #7a6650;
+  --chart-4: #a89076;
+  --chart-5: #c7b8a0;
+
+  --sidebar: #efe8df;
+  --sidebar-foreground: #161311;
+  --sidebar-primary: #161311;
+  --sidebar-primary-foreground: #f7f1e8;
+  --sidebar-accent: rgba(35, 28, 21, 0.08);
+  --sidebar-accent-foreground: #161311;
+  --sidebar-border: rgba(35, 28, 21, 0.14);
+  --sidebar-ring: rgba(22, 19, 17, 0.32);
+}
+
+/* 4i.codes 暂只提供浅色主题; .dark 类保留但基本继承 :root */
+.dark {
+  --background: #efe8df;
+  --foreground: #161311;
+  --card: rgba(255, 252, 246, 0.86);
+  --card-foreground: #161311;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply bg-background text-foreground font-mono;
+    font-family: var(--font-sans);
+  }
+
+  body {
+    @apply relative min-h-screen bg-background text-foreground;
+    font-family: var(--font-sans);
+    padding-top: 88px;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.42), transparent 60%),
+      radial-gradient(circle at 75% 55%, rgba(230, 220, 205, 0.34), transparent 55%);
+    pointer-events: none;
+  }
+}
+
+/* ============================================================
+ * 顶栏胶囊
+ * ============================================================ */
+.ficodes-topbar {
+  position: fixed;
+  top: 16px;
+  left: 4%;
+  right: 4%;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.ficodes-topbar-inner {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 24px;
+  background: rgba(255, 252, 246, 0.86);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  border: 1px solid rgba(35, 28, 21, 0.1);
+  border-radius: 999px;
+  box-shadow:
+    0 12px 32px rgba(20, 16, 12, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.4) inset;
+}
+
+.ficodes-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.ficodes-topbar-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 42%;
+  border: 1px solid rgba(35, 28, 21, 0.1);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(220, 210, 195, 0.5));
+  flex-shrink: 0;
+}
+
+.ficodes-topbar-brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.ficodes-topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 1.6vw, 26px);
+}
+
+.ficodes-topbar-nav > a {
+  position: relative;
+  padding: 6px 0;
+  font-size: clamp(0.86rem, 0.94vw, 0.96rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(33, 27, 22, 0.62);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.ficodes-topbar-nav > a:hover {
+  color: var(--ink);
+}
+
+.ficodes-topbar-nav > a.is-active {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.ficodes-topbar-nav > a.is-active::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(18, 15, 12, 0.82);
+}
+
+.ficodes-topbar-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(22, 18, 15, 0.72);
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.ficodes-topbar-theme svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ficodes-topbar-theme:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .ficodes-topbar {
+    top: 8px;
+    left: 2%;
+    right: 2%;
+  }
+  .ficodes-topbar-inner {
+    padding: 10px 14px;
+    gap: 12px;
+    border-radius: 24px;
+    flex-wrap: wrap;
+  }
+  .ficodes-topbar-brand-name {
+    font-size: 1rem;
+  }
+  .ficodes-topbar-nav {
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  body {
+    padding-top: 72px;
+  }
+}

@@ -1,0 +1,16 @@
+services:
+  status:
+    build: .
+    image: 4icode/status:latest
+    container_name: 4icode-status
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - STATUS_DB_PATH=/app/data/status.db
+    volumes:
+      # provider 配置 (可选;也可以用 PROVIDERS_JSON 环境变量)
+      - ./data:/app/data
