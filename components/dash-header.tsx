@@ -40,37 +40,37 @@ export function DashHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       {/* 左: 品牌 */}
-      <div className="flex items-center gap-2.5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-foreground text-background shadow-sm">
-          <Activity className="h-4 w-4" />
+      <div className="flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-foreground text-background shadow-sm">
+          <Activity className="h-5 w-5" />
         </div>
         <div className="flex flex-col leading-tight">
           <h1
             className={cn(
-              "text-xl font-black tracking-tight sm:text-2xl",
+              "text-2xl font-black tracking-tight sm:text-3xl",
               "bg-gradient-to-r from-[#161311] via-[#2a221a] to-[#4e4030] bg-clip-text text-transparent"
             )}
           >
             {t.header.title}
           </h1>
-          <p className="text-[11px] text-muted-foreground sm:text-xs">
+          <p className="text-xs text-muted-foreground sm:text-sm">
             {t.header.subtitle}
           </p>
         </div>
       </div>
 
       {/* 右: 按钮组 */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         <LanguageToggle />
         <ThemeMute />
         <a
           href="https://github.com/RoseKhlifa/4icode-status"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
           title={t.header.githubTip}
         >
-          <Github className="h-3.5 w-3.5" />
+          <Github className="h-4 w-4" />
         </a>
         <SharePopover />
 
@@ -95,11 +95,11 @@ function LanguageToggle() {
     <button
       type="button"
       onClick={() => setLang(nextLang)}
-      className="flex h-8 items-center justify-center rounded-full border border-border/50 bg-white/40 px-2.5 min-w-[2rem] text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
+      className="flex h-9 items-center justify-center rounded-full border border-border/50 bg-white/40 px-3 min-w-[2.25rem] text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
       aria-label={`Switch language to ${nextLang}`}
       title={nextLang === "en" ? "English" : "中文"}
     >
-      <span className="text-xs font-bold">{glyph}</span>
+      <span className="text-sm font-bold">{glyph}</span>
     </button>
   );
 }
@@ -110,7 +110,7 @@ function LanguageToggle() {
 function ThemeMute() {
   return (
     <span
-      className="flex h-8 w-8 cursor-default items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur select-none"
+      className="flex h-9 w-9 cursor-default items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur select-none"
       aria-hidden="true"
     >
       <svg
@@ -160,10 +160,10 @@ function SharePopover() {
       <HoverCardTrigger asChild>
         <button
           type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
           aria-label={t.header.shareTip}
         >
-          <Share2 className="h-3.5 w-3.5" />
+          <Share2 className="h-4 w-4" />
         </button>
       </HoverCardTrigger>
       <HoverCardContent
@@ -228,12 +228,12 @@ function CountBadge({
   return (
     <span
       className={cn(
-        "inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-xs font-bold backdrop-blur",
+        "inline-flex h-9 items-center gap-2 rounded-full border px-3 text-sm font-bold backdrop-blur",
         toneClass
       )}
       title={title}
     >
-      <span className={cn("h-1.5 w-1.5 rounded-full", dotClass)} />
+      <span className={cn("h-2 w-2 rounded-full", dotClass)} />
       {count}
     </span>
   );

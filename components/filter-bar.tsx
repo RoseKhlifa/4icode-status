@@ -56,7 +56,7 @@ export function FilterBar(props: FilterBarProps) {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border/50 bg-white/40 px-3 py-2 backdrop-blur">
+    <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-border/50 bg-white/40 px-4 py-3 backdrop-blur">
       {/* 左: 漏斗图标 + 下拉 */}
       <div className="flex items-center gap-2 pl-1 text-muted-foreground">
         <Filter className="h-4 w-4" />
@@ -88,14 +88,14 @@ export function FilterBar(props: FilterBarProps) {
       />
 
       {/* 中: 时间窗口 tabs */}
-      <div className="ml-1 flex items-center gap-0.5 rounded-full border border-border/50 bg-background/40 p-0.5">
+      <div className="ml-1 flex items-center gap-0.5 rounded-full border border-border/50 bg-background/40 p-1">
         {WINDOW_TABS.map((tab) => (
           <button
             key={tab.key}
             type="button"
             onClick={() => props.onWindowChange(tab.key)}
             className={cn(
-              "rounded-full px-2.5 py-1 text-[11px] transition-all",
+              "rounded-full px-3 py-1.5 text-xs transition-all",
               props.activeWindow === tab.key
                 ? "bg-foreground text-background shadow"
                 : "text-muted-foreground hover:text-foreground"
@@ -112,14 +112,14 @@ export function FilterBar(props: FilterBarProps) {
           type="button"
           onClick={props.onRefresh}
           className={cn(
-            "flex h-8 items-center gap-1.5 rounded-full border border-border/50 bg-background/50 px-3 text-xs transition-all hover:border-foreground/40",
+            "flex h-9 items-center gap-2 rounded-full border border-border/50 bg-background/50 px-4 text-sm transition-all hover:border-foreground/40",
             props.refreshing && "opacity-60"
           )}
           disabled={props.refreshing}
         >
           <span
             className={cn(
-              "inline-block h-1.5 w-1.5 rounded-full",
+              "inline-block h-2 w-2 rounded-full",
               props.refreshing ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
             )}
           />
@@ -150,7 +150,7 @@ function Select({
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value === "" ? null : e.target.value)}
         className={cn(
-          "h-8 appearance-none rounded-full border border-border/50 bg-background/40 pl-3.5 pr-7 text-[11.5px]",
+          "h-9 appearance-none rounded-full border border-border/50 bg-background/40 pl-4 pr-8 text-sm",
           "text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus:ring-2 focus:ring-foreground/20",
           "cursor-pointer"
         )}
@@ -162,7 +162,7 @@ function Select({
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+      <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
     </div>
   );
 }

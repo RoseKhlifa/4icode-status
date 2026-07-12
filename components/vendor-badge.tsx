@@ -117,7 +117,7 @@ export function VendorBadge({ iconKey, vendor, className }: VendorBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider",
+        "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-bold uppercase tracking-wider",
         p.ring,
         p.tint,
         className
@@ -130,11 +130,11 @@ export function VendorBadge({ iconKey, vendor, className }: VendorBadgeProps) {
           src={p.icon}
           alt=""
           aria-hidden="true"
-          className="h-3 w-3"
+          className="h-3.5 w-3.5"
           draggable={false}
         />
       ) : (
-        <span className="text-[10px] leading-none">◆</span>
+        <span className="text-[11px] leading-none">◆</span>
       )}
       {p.label}
     </span>

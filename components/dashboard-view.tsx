@@ -226,7 +226,7 @@ export function DashboardView({ initialData }: DashboardViewProps) {
         selectedPeriod={currentPeriod}
       />
 
-      <div className="mt-1 flex justify-between text-[10.5px] text-muted-foreground">
+      <div className="mt-2 flex justify-between text-xs text-muted-foreground">
         <span>
           {t.meta.lastUpdated}{" "}
           <span className="font-mono">

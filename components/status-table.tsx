@@ -63,7 +63,7 @@ export function StatusTable({
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-white/40 backdrop-blur">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1080px] table-fixed border-collapse text-sm">
+        <table className="w-full min-w-[1180px] table-fixed border-collapse text-sm">
           <colgroup>
             <col className="w-[10%]" /> {/* 服务商 */}
             <col className="w-[7%]" /> {/* 服务 badge */}
@@ -76,8 +76,8 @@ export function StatusTable({
             <col /> {/* 趋势条: 占满剩余 */}
           </colgroup>
           <thead className="bg-white/70 backdrop-blur">
-            <tr className="h-9 text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-              <Th className="pl-4">{t.table.vendor}</Th>
+            <tr className="h-11 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+              <Th className="pl-5">{t.table.vendor}</Th>
               <Th>{t.table.service}</Th>
               <Th>{t.table.channel}</Th>
               <Th>{t.table.model}</Th>
@@ -85,9 +85,9 @@ export function StatusTable({
               <Th className="text-center">{t.table.coverage}</Th>
               <Th className="text-right">{t.table.availability}</Th>
               <Th>{t.table.lastCheck}</Th>
-              <Th className="pr-4">
+              <Th className="pr-5">
                 {t.table.trend}
-                <span className="ml-1.5 text-[9.5px] tracking-normal opacity-70">
+                <span className="ml-2 text-[10.5px] tracking-normal opacity-70">
                   {t.table.trendSuffix(PERIOD_LABEL[selectedPeriod])}
                 </span>
               </Th>
@@ -120,7 +120,7 @@ function Th({
   return (
     <th
       className={cn(
-        "whitespace-nowrap border-b border-border/40 px-2 text-left align-middle font-semibold",
+        "whitespace-nowrap border-b border-border/40 px-3 text-left align-middle font-semibold",
         className
       )}
     >
@@ -156,43 +156,43 @@ function Row({
       )}
     >
       {/* 服务商 */}
-      <td className="pl-4 pr-2 py-2 align-middle">
+      <td className="pl-5 pr-3 py-3.5 align-middle">
         <div className="flex flex-col leading-tight">
-          <span className="font-semibold text-foreground">{latest.name}</span>
-          <span className="text-[10.5px] text-muted-foreground">{vendorLabel}</span>
+          <span className="text-base font-semibold text-foreground">{latest.name}</span>
+          <span className="text-xs text-muted-foreground">{vendorLabel}</span>
         </div>
       </td>
 
       {/* 服务 (品牌 badge) */}
-      <td className="px-2 py-2 align-middle">
+      <td className="px-3 py-3.5 align-middle">
         <VendorBadge iconKey={latest.iconKey} vendor={latest.vendor} />
       </td>
 
       {/* 通道 */}
-      <td className="px-2 py-2 align-middle">
-        <div className="flex items-center gap-1.5 text-[12.5px] text-foreground/85">
-          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", statusDot(latest.status))} />
+      <td className="px-3 py-3.5 align-middle">
+        <div className="flex items-center gap-2 text-sm text-foreground/85">
+          <span className={cn("h-2 w-2 shrink-0 rounded-full", statusDot(latest.status))} />
           <span className="truncate">{channel}</span>
         </div>
       </td>
 
       {/* 模型 */}
-      <td className="px-2 py-2 align-middle">
-        <div className="flex flex-col gap-0 font-mono text-[11.5px] leading-tight text-foreground/85">
+      <td className="px-3 py-3.5 align-middle">
+        <div className="flex flex-col gap-0 font-mono text-[13px] leading-tight text-foreground/85">
           {models.slice(0, 4).map((m) => (
             <span key={m} className="truncate">
               {m}
             </span>
           ))}
           {models.length > 4 && (
-            <span className="text-[10px] text-muted-foreground">+{models.length - 4}</span>
+            <span className="text-[11px] text-muted-foreground">+{models.length - 4}</span>
           )}
         </div>
       </td>
 
       {/* 价格 */}
-      <td className="px-2 py-2 align-middle">
-        <div className="flex flex-col font-mono text-[11.5px] leading-tight">
+      <td className="px-3 py-3.5 align-middle">
+        <div className="flex flex-col font-mono text-[13px] leading-tight">
           {latest.priceRatio && (
             <span className="text-foreground">{latest.priceRatio}</span>
           )}
@@ -206,34 +206,34 @@ function Row({
       </td>
 
       {/* 收录天数: max(realCoverageDays, baselineDays) */}
-      <td className="px-2 py-2 text-center align-middle font-mono text-[11.5px] text-foreground/80">
+      <td className="px-3 py-3.5 text-center align-middle font-mono text-[13px] text-foreground/80">
         {formatCoverage(latest.realCoverageDays, latest.baselineDays)}
       </td>
 
       {/* 可用率 */}
-      <td className="px-2 py-2 text-right align-middle">
-        <span className={cn("font-mono text-[13px] font-bold", pctColor(pct))}>
+      <td className="px-3 py-3.5 text-right align-middle">
+        <span className={cn("font-mono text-[15px] font-bold", pctColor(pct))}>
           {pct == null ? "—" : `${pct.toFixed(pct >= 99 ? 0 : 2)}%`}
         </span>
       </td>
 
       {/* 最后监测 */}
-      <td className="px-2 py-2 align-middle">
+      <td className="px-3 py-3.5 align-middle">
         <div className="flex flex-col leading-tight">
-          <span className="flex items-center gap-1 font-mono text-[11.5px]">
-            <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", statusDot(latest.status))} />
+          <span className="flex items-center gap-1.5 font-mono text-[13px]">
+            <span className={cn("h-2 w-2 shrink-0 rounded-full", statusDot(latest.status))} />
             <span className="text-foreground">
               {latest.latencyMs != null ? `${latest.latencyMs}ms` : "—"}
             </span>
           </span>
-          <span className="pl-2.5 font-mono text-[10px] text-muted-foreground/80">
+          <span className="pl-3.5 font-mono text-[11px] text-muted-foreground/80">
             {formatLastTime(latest.checkedAt)}
           </span>
         </div>
       </td>
 
       {/* 监控条 */}
-      <td className="pl-2 pr-4 py-2 align-middle">
+      <td className="pl-3 pr-5 py-3.5 align-middle">
         <StatusStrip items={timeline.items} slots={60} />
       </td>
     </tr>

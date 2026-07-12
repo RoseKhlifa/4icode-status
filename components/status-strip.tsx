@@ -52,7 +52,7 @@ export function StatusStrip({ items, slots = 90, className }: StatusStripProps) 
   return (
     <div
       className={cn(
-        "flex h-6 w-full items-center gap-[2px]",
+        "flex h-8 w-full items-center gap-[2px]",
         className
       )}
       role="img"
