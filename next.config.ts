@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["better-sqlite3"],
   // 反代场景下同时设 basePath + assetPrefix, Next 会自动加前缀
   ...(basePath ? { basePath, assetPrefix: basePath } : {}),
+
+  // ⚠ 关键: 反代场景下, Next 默认会把 /status/ 308 到 /status.
+  // 如果 nginx 侧还配置了 "无斜杠 -> 有斜杠" 的 rewrite, 就会循环.
+  // 让 Next 跳过尾斜杠规范化, 由 nginx 统一处理.
+  skipTrailingSlashRedirect: true,
+  trailingSlash: false,
 };
 
 export default nextConfig;
