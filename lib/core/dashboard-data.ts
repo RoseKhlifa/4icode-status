@@ -50,6 +50,11 @@ export function resetDashboardCacheMetrics(): void {
 const DEFAULT_DASHBOARD_CACHE_TTL_MS = 5 * 60 * 1000;
 const dashboardCache = new Map<string, DashboardCacheEntry>();
 
+/** 后台改动 provider 时调用, 清掉所有 dashboard 缓存, 下次请求会重算 */
+export function invalidateDashboardCache(): void {
+  dashboardCache.clear();
+}
+
 function getDashboardCacheKey(
   pollIntervalMs: number,
   providerKey: string,
@@ -59,10 +64,13 @@ function getDashboardCacheKey(
 }
 
 function getDashboardCacheTtlMs(pollIntervalMs: number): number {
-  if (Number.isFinite(pollIntervalMs) && pollIntervalMs > 0) {
-    return pollIntervalMs;
-  }
-  return DEFAULT_DASHBOARD_CACHE_TTL_MS;
+  // 服务端聚合缓存 TTL = 探测间隔的 1/4 (最短 5s), 让"改了 provider 立刻能看到"
+  // 更靠谱. 早期用整段 pollIntervalMs 会导致改动最多滞后 60s + poller 60s = 120s
+  const base =
+    Number.isFinite(pollIntervalMs) && pollIntervalMs > 0
+      ? pollIntervalMs
+      : DEFAULT_DASHBOARD_CACHE_TTL_MS;
+  return Math.max(5_000, Math.floor(base / 4));
 }
 
 function generateETag(data: string): string {

@@ -12,6 +12,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import type { CheckResult, HealthStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatLocalTime } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n/context";
 
 const STATUS_COLOR: Record<HealthStatus, string> = {
   operational: "bg-emerald-500",
@@ -32,6 +33,18 @@ interface StatusStripProps {
 }
 
 export function StatusStrip({ items, slots = 90, className }: StatusStripProps) {
+  const { t, lang } = useLocale();
+  const STATUS_LABEL: Record<HealthStatus, string> = {
+    operational: t.status.operational,
+    degraded: t.status.degraded,
+    failed: t.status.failed,
+    validation_failed: t.status.validationFailed,
+    maintenance: t.status.maintenance,
+    error: t.status.error,
+  };
+  const latencyLabel = lang === "en" ? "Latency" : "对话延迟";
+  const pingLabel = lang === "en" ? "Endpoint PING" : "端点 PING";
+
   // items 是 checkedAt DESC (最新在最前). 我们要 UI 从左到右 = 旧到新, 所以反转.
   const asc = items.slice(0, slots).slice().reverse();
   const emptyCount = Math.max(0, slots - asc.length);
@@ -43,7 +56,7 @@ export function StatusStrip({ items, slots = 90, className }: StatusStripProps) 
         className
       )}
       role="img"
-      aria-label={`最近 ${slots} 次探测状态`}
+      aria-label={lang === "en" ? `Last ${slots} checks` : `最近 ${slots} 次探测状态`}
     >
       {Array.from({ length: emptyCount }, (_, i) => (
         <span
@@ -76,13 +89,13 @@ export function StatusStrip({ items, slots = 90, className }: StatusStripProps) 
             </div>
             <div className="grid grid-cols-2 gap-x-4 text-[11px] text-muted-foreground">
               <span>
-                对话延迟{" "}
+                {latencyLabel}{" "}
                 <b className="font-mono text-foreground">
                   {item.latencyMs != null ? `${item.latencyMs} ms` : "—"}
                 </b>
               </span>
               <span>
-                端点 PING{" "}
+                {pingLabel}{" "}
                 <b className="font-mono text-foreground">
                   {item.pingLatencyMs != null ? `${item.pingLatencyMs} ms` : "—"}
                 </b>
@@ -100,11 +113,3 @@ export function StatusStrip({ items, slots = 90, className }: StatusStripProps) 
   );
 }
 
-const STATUS_LABEL: Record<HealthStatus, string> = {
-  operational: "正常",
-  degraded: "延迟",
-  failed: "异常",
-  validation_failed: "验证失败",
-  maintenance: "维护中",
-  error: "错误",
-};

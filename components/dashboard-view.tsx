@@ -31,12 +31,24 @@ import type {
   DashboardData,
   ProviderTimeline,
 } from "@/lib/types";
+import { useLocale } from "@/lib/i18n/context";
 
 interface DashboardViewProps {
   initialData: DashboardData;
 }
 
+/** "1 分钟" / "45 秒" 从服务端过来的中文, 客户端按语言翻译 */
+function localizeInterval(label: string, lang: "zh" | "en"): string {
+  if (lang !== "en") return label;
+  const minMatch = label.match(/^(\d+(?:\.\d+)?)\s*分钟$/);
+  if (minMatch) return `${minMatch[1]} min`;
+  const secMatch = label.match(/^(\d+(?:\.\d+)?)\s*秒$/);
+  if (secMatch) return `${secMatch[1]} s`;
+  return label;
+}
+
 export function DashboardView({ initialData }: DashboardViewProps) {
+  const { t, lang } = useLocale();
   const [data, setData] = useState<DashboardData>(initialData);
   const [activeWindow, setActiveWindow] = useState<WindowKey>("90m");
   const [refreshing, setRefreshing] = useState(false);
@@ -51,6 +63,10 @@ export function DashboardView({ initialData }: DashboardViewProps) {
    * 后端后台轮询 (与 pollIntervalMs 保持一致)
    * ============================================================ */
   useEffect(() => {
+    // 前端轮询间隔 = 后端探测间隔 (默认 60s)
+    // 用 forceFresh 绕开前端 SWR 缓存 + 服务端 CDN 缓存,
+    // 每次都拿一次真正新鲜的数据. 这样后台改动 provider 后,
+    // 下一次前端 tick 就能看到新卡片.
     const intervalMs = data.pollIntervalMs > 0 ? data.pollIntervalMs : 60_000;
     let cancelled = false;
 
@@ -58,10 +74,7 @@ export function DashboardView({ initialData }: DashboardViewProps) {
       try {
         const result = await fetchWithCache({
           trendPeriod: currentPeriod,
-          revalidateIfFresh: true,
-          onBackgroundUpdate: (next) => {
-            if (!cancelled) setData(next);
-          },
+          forceFresh: true,
         });
         if (!cancelled && result.data) setData(result.data);
       } catch (err) {
@@ -70,9 +83,17 @@ export function DashboardView({ initialData }: DashboardViewProps) {
     };
 
     const id = setInterval(tick, intervalMs);
+
+    // 页面可见性变化: 从后台切回前台时, 立刻补一次
+    const onVisible = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
     return () => {
       cancelled = true;
       clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [data.pollIntervalMs, currentPeriod]);
 
@@ -207,16 +228,14 @@ export function DashboardView({ initialData }: DashboardViewProps) {
 
       <div className="mt-1 flex justify-between text-[10.5px] text-muted-foreground">
         <span>
-          最后更新{" "}
+          {t.meta.lastUpdated}{" "}
           <span className="font-mono">
             {data.lastUpdated
-              ? new Date(data.lastUpdated).toLocaleString("zh-CN")
-              : "—"}
+              ? new Date(data.lastUpdated).toLocaleString(lang === "en" ? "en-US" : "zh-CN")
+              : t.meta.unknownTime}
           </span>
         </span>
-        <span>
-          共 {data.total} 个 provider · 探测间隔 {data.pollIntervalLabel}
-        </span>
+        <span>{t.meta.providerSummary(data.total, localizeInterval(data.pollIntervalLabel, lang))}</span>
       </div>
     </div>
   );

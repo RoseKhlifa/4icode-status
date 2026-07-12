@@ -11,6 +11,7 @@
 import { Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AvailabilityPeriod } from "@/lib/types";
+import { useLocale } from "@/lib/i18n/context";
 
 export type WindowKey = "90m" | "24h" | "7d" | "30d" | "all";
 
@@ -44,15 +45,16 @@ interface FilterBarProps {
   refreshing?: boolean;
 }
 
-const WINDOW_TABS: Array<{ key: WindowKey; label: string }> = [
-  { key: "90m", label: "近 90 分钟" },
-  { key: "24h", label: "近 24 小时" },
-  { key: "7d", label: "近 7 天" },
-  { key: "30d", label: "近 30 天" },
-  { key: "all", label: "全天" },
-];
-
 export function FilterBar(props: FilterBarProps) {
+  const { t } = useLocale();
+  const WINDOW_TABS: Array<{ key: WindowKey; label: string }> = [
+    { key: "90m", label: t.filter.win90m },
+    { key: "24h", label: t.filter.win24h },
+    { key: "7d", label: t.filter.win7d },
+    { key: "30d", label: t.filter.win30d },
+    { key: "all", label: t.filter.winAll },
+  ];
+
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border/50 bg-white/40 px-3 py-2 backdrop-blur">
       {/* 左: 漏斗图标 + 下拉 */}
@@ -61,25 +63,25 @@ export function FilterBar(props: FilterBarProps) {
       </div>
 
       <Select
-        placeholder="所有分类"
+        placeholder={t.filter.allCategories}
         value={props.category}
         options={props.categories}
         onChange={props.onCategoryChange}
       />
       <Select
-        placeholder="所有服务商"
+        placeholder={t.filter.allVendors}
         value={props.vendor}
         options={props.vendors}
         onChange={props.onVendorChange}
       />
       <Select
-        placeholder="所有服务"
+        placeholder={t.filter.allServices}
         value={props.service}
         options={props.services}
         onChange={props.onServiceChange}
       />
       <Select
-        placeholder="所有通道"
+        placeholder={t.filter.allChannels}
         value={props.channel}
         options={props.channels}
         onChange={props.onChannelChange}
@@ -87,19 +89,19 @@ export function FilterBar(props: FilterBarProps) {
 
       {/* 中: 时间窗口 tabs */}
       <div className="ml-1 flex items-center gap-0.5 rounded-full border border-border/50 bg-background/40 p-0.5">
-        {WINDOW_TABS.map((t) => (
+        {WINDOW_TABS.map((tab) => (
           <button
-            key={t.key}
+            key={tab.key}
             type="button"
-            onClick={() => props.onWindowChange(t.key)}
+            onClick={() => props.onWindowChange(tab.key)}
             className={cn(
               "rounded-full px-2.5 py-1 text-[11px] transition-all",
-              props.activeWindow === t.key
+              props.activeWindow === tab.key
                 ? "bg-foreground text-background shadow"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            {t.label}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -121,7 +123,7 @@ export function FilterBar(props: FilterBarProps) {
               props.refreshing ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
             )}
           />
-          {props.refreshing ? "刷新中" : "立即刷新"}
+          {props.refreshing ? t.filter.refreshing : t.filter.refresh}
         </button>
       </div>
     </div>

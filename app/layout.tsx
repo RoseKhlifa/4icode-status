@@ -3,6 +3,7 @@ import "./globals.css";
 import "@/lib/core/poller";
 import NextTopLoader from "nextjs-toploader";
 import { TopBar } from "@/components/top-bar";
+import { LocaleProvider } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -19,13 +20,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // 4i.codes 使用统一浅色主题, 不再随时间自动切暗
   return (
     <html lang="zh-CN" suppressHydrationWarning className={cn("font-mono")}>
       <body className="antialiased">
         <NextTopLoader color="var(--ink)" showSpinner={false} />
-        <TopBar />
-        {children}
+        <LocaleProvider>
+          <TopBar />
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

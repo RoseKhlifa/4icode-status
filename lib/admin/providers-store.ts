@@ -234,14 +234,55 @@ export async function patchApiKey(
 }
 
 /* ============================================================
- * 触发 config-loader 重读
+ * 后台改动 -> 缓存失效 + 立即触发一次探测
+ *
+ * 前端每 pollIntervalMs 秒会用 forceFresh 拉一次数据. 这里只需要:
+ *   1) config-loader 重读, 拿到最新 provider 列表 (含新增/修改)
+ *   2) 触发一次探测: 新 provider 立刻有一条历史
+ *   3) 清 dashboard 聚合缓存: 下一次前端请求就返回新数据
+ *
+ * 不清 ping cache — 保留 lastPingAt 阻止前端 forceFresh 触发的即时探测
+ * 与我们这里触发的探测撞车 (60s 内只探一次)
  * ============================================================ */
 async function invalidateConfigCache() {
   try {
-    const mod = await import("../database/config-loader");
-    // 强制刷新: 下次读取时会重新 parse providers.json
-    await mod.loadProviderConfigsFromDB({ forceRefresh: true });
+    // 1) 重新解析 providers.json (会刷新 config-loader 内部缓存 + registerProviderMeta)
+    const cfgMod = await import("../database/config-loader");
+    const configs = await cfgMod.loadProviderConfigsFromDB({ forceRefresh: true });
+
+    // 2) 触发一次探测 + 更新 ping cache 的 lastPingAt (防止立即重复)
+    void triggerImmediateProbe(configs);
+
+    // 3) 清 dashboard 聚合缓存, 让前端下一次请求拿到新列表
+    const dashMod = await import("../core/dashboard-data");
+    dashMod.invalidateDashboardCache();
   } catch (err) {
-    logError("重新加载 provider 配置失败", err);
+    logError("刷新缓存 / 触发即时探测失败", err);
+  }
+}
+
+async function triggerImmediateProbe(
+  configs: Array<{ id: string; is_maintenance?: boolean; groupName?: string | null }>
+) {
+  try {
+    const active = configs.filter((c) => !c.is_maintenance);
+    if (active.length === 0) return;
+
+    const providersMod = await import("../providers");
+    const historyMod = await import("../database/history");
+    const stateMod = await import("../core/global-state");
+
+    const results = await providersMod.runProviderChecks(configs as never);
+    await historyMod.historySnapshotStore.append(results);
+    console.log(`[status] 后台改动触发即时探测, 覆盖 ${results.length} 条`);
+
+    // 更新所有 ping cache entry 的 lastPingAt, 阻止 pollInterval 内被再次触发探测
+    const now = Date.now();
+    const store = stateMod.getPingCacheStore();
+    for (const key of Object.keys(store)) {
+      store[key].lastPingAt = now;
+    }
+  } catch (err) {
+    logError("即时探测失败", err);
   }
 }

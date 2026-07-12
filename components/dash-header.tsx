@@ -4,8 +4,8 @@
  * 4i.codes 状态看板顶部横幅
  *
  * 右上按钮组:
- *   [中]     当前语言 (只有中文, tooltip 说明)
- *   [☀]      主题 (只有浅色, tooltip 说明)
+ *   [中/EN]  语言切换 (真切换, 存 localStorage)
+ *   [☀]      主题 (哑按钮, 无 tooltip / 无 hover popover / 无点击效果)
  *   [GH]     GitHub 链接 (真链接)
  *   [share]  hover 打开 popover: 宣传文案 + 复制按钮
  *   [● N]    正常/异常计数
@@ -18,6 +18,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { useLocale } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
 interface DashHeaderProps {
@@ -27,18 +28,13 @@ interface DashHeaderProps {
   maintenanceCount: number;
 }
 
-const PROMO_TEXT = `4i.codes — For I, For me
-面向开发者的 AI API 中转平台
-支持 Claude / GPT / Gemini / Grok 全系模型
-统一 /v1/chat/completions 接口 · 稳定路由 · 透明计费
-访问 https://4i.codes 了解详情`;
-
 export function DashHeader({
   operationalCount,
   degradedCount,
   errorCount,
   maintenanceCount,
 }: DashHeaderProps) {
+  const { t } = useLocale();
   const badCount = degradedCount + errorCount;
 
   return (
@@ -55,95 +51,81 @@ export function DashHeader({
               "bg-gradient-to-r from-[#161311] via-[#2a221a] to-[#4e4030] bg-clip-text text-transparent"
             )}
           >
-            4i.codes 状态监控
+            {t.header.title}
           </h1>
           <p className="text-[11px] text-muted-foreground sm:text-xs">
-            实时监测 API 中转服务可用性矩阵
+            {t.header.subtitle}
           </p>
         </div>
       </div>
 
       {/* 右: 按钮组 */}
       <div className="flex items-center gap-1.5">
-        <LanguagePill />
-        <ThemePill />
+        <LanguageToggle />
+        <ThemeMute />
         <a
           href="https://github.com/RoseKhlifa/4icode-status"
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
-          title="GitHub · 4icode-status"
+          title={t.header.githubTip}
         >
           <Github className="h-3.5 w-3.5" />
         </a>
         <SharePopover />
 
-        <CountBadge tone="emerald" count={operationalCount} title="正常" />
+        <CountBadge tone="emerald" count={operationalCount} title={t.header.countTitleOk} />
         {maintenanceCount > 0 && (
-          <CountBadge tone="slate" count={maintenanceCount} title="维护" />
+          <CountBadge tone="slate" count={maintenanceCount} title={t.header.countTitleMaint} />
         )}
-        <CountBadge tone="rose" count={badCount} title="异常" />
+        <CountBadge tone="rose" count={badCount} title={t.header.countTitleBad} />
       </div>
     </div>
   );
 }
 
 /* ============================================================
- * Language pill
+ * Language toggle — 真切换, 无 tooltip
  * ============================================================ */
-function LanguagePill() {
+function LanguageToggle() {
+  const { lang, setLang } = useLocale();
+  const nextLang = lang === "zh" ? "en" : "zh";
+  const glyph = lang === "zh" ? "中" : "EN";
   return (
-    <HoverCard openDelay={100} closeDelay={80}>
-      <HoverCardTrigger asChild>
-        <button
-          type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
-          aria-label="当前语言"
-        >
-          <span className="text-xs font-bold">中</span>
-        </button>
-      </HoverCardTrigger>
-      <HoverCardContent
-        side="bottom"
-        align="end"
-        className="w-56 rounded-xl border border-border/60 bg-popover/95 p-3 text-xs shadow-xl backdrop-blur"
-      >
-        <div className="mb-1 font-semibold">语言 · 中文</div>
-        <p className="text-[11px] leading-relaxed text-muted-foreground">
-          状态看板暂只提供中文。 4i.codes 主站有中英切换,后续版本会跟进这里。
-        </p>
-      </HoverCardContent>
-    </HoverCard>
+    <button
+      type="button"
+      onClick={() => setLang(nextLang)}
+      className="flex h-8 items-center justify-center rounded-full border border-border/50 bg-white/40 px-2.5 min-w-[2rem] text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
+      aria-label={`Switch language to ${nextLang}`}
+      title={nextLang === "en" ? "English" : "中文"}
+    >
+      <span className="text-xs font-bold">{glyph}</span>
+    </button>
   );
 }
 
 /* ============================================================
- * Theme pill
+ * Theme — 哑按钮 (无 hover 弹层, 无点击效果)
  * ============================================================ */
-function ThemePill() {
+function ThemeMute() {
   return (
-    <HoverCard openDelay={100} closeDelay={80}>
-      <HoverCardTrigger asChild>
-        <button
-          type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
-          aria-label="主题"
-        >
-          <ThemeSunIcon />
-        </button>
-      </HoverCardTrigger>
-      <HoverCardContent
-        side="bottom"
-        align="end"
-        className="w-56 rounded-xl border border-border/60 bg-popover/95 p-3 text-xs shadow-xl backdrop-blur"
+    <span
+      className="flex h-8 w-8 cursor-default items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur select-none"
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-4 w-4 opacity-70"
       >
-        <div className="mb-1 font-semibold">主题 · 米黄浅色</div>
-        <p className="text-[11px] leading-relaxed text-muted-foreground">
-          4i.codes 品牌调色板是纸色 <code className="font-mono">#efe8df</code> +
-          墨色 <code className="font-mono">#161311</code>。暗色模式暂不提供,后续版本视用户反馈开启。
-        </p>
-      </HoverCardContent>
-    </HoverCard>
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 3v1.6M12 19.4V21M3 12h1.6M19.4 12H21M5.6 5.6l1.13 1.13M17.27 17.27l1.13 1.13M5.6 18.4l1.13-1.13M17.27 6.73l1.13-1.13"></path>
+      </svg>
+    </span>
   );
 }
 
@@ -151,15 +133,16 @@ function ThemePill() {
  * Share popover
  * ============================================================ */
 function SharePopover() {
+  const { t } = useLocale();
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(PROMO_TEXT);
+        await navigator.clipboard.writeText(t.header.promo);
       } else {
         const ta = document.createElement("textarea");
-        ta.value = PROMO_TEXT;
+        ta.value = t.header.promo;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
@@ -178,7 +161,7 @@ function SharePopover() {
         <button
           type="button"
           className="flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-white/40 text-muted-foreground backdrop-blur transition-colors hover:border-foreground/40 hover:text-foreground"
-          aria-label="分享 4i.codes"
+          aria-label={t.header.shareTip}
         >
           <Share2 className="h-3.5 w-3.5" />
         </button>
@@ -189,7 +172,7 @@ function SharePopover() {
         className="w-80 rounded-xl border border-border/60 bg-popover/95 p-3 text-xs shadow-xl backdrop-blur"
       >
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-semibold">推荐给朋友</span>
+          <span className="font-semibold">{t.header.shareTitle}</span>
           <button
             type="button"
             onClick={copy}
@@ -202,17 +185,17 @@ function SharePopover() {
           >
             {copied ? (
               <>
-                <Check className="h-3 w-3" /> 已复制
+                <Check className="h-3 w-3" /> {t.header.copied}
               </>
             ) : (
               <>
-                <Copy className="h-3 w-3" /> 复制
+                <Copy className="h-3 w-3" /> {t.header.copy}
               </>
             )}
           </button>
         </div>
         <pre className="max-h-[220px] overflow-auto whitespace-pre-wrap rounded-lg bg-black/5 p-2.5 font-mono text-[10.5px] leading-relaxed text-foreground/85">
-{PROMO_TEXT}
+{t.header.promo}
         </pre>
       </HoverCardContent>
     </HoverCard>
@@ -253,22 +236,5 @@ function CountBadge({
       <span className={cn("h-1.5 w-1.5 rounded-full", dotClass)} />
       {count}
     </span>
-  );
-}
-
-function ThemeSunIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-    >
-      <circle cx="12" cy="12" r="4"></circle>
-      <path d="M12 3v1.6M12 19.4V21M3 12h1.6M19.4 12H21M5.6 5.6l1.13 1.13M17.27 17.27l1.13 1.13M5.6 18.4l1.13-1.13M17.27 6.73l1.13-1.13"></path>
-    </svg>
   );
 }

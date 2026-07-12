@@ -263,19 +263,14 @@
   border-radius: 999px;
   background: transparent;
   border: none;
-  cursor: pointer;
-  color: rgba(22, 18, 15, 0.72);
-  transition: background 180ms ease, color 180ms ease;
+  cursor: default;
+  user-select: none;
+  color: rgba(22, 18, 15, 0.56);
 }
 
 .ficodes-topbar-theme svg {
   width: 18px;
   height: 18px;
-}
-
-.ficodes-topbar-theme:hover {
-  background: rgba(255, 255, 255, 0.5);
-  color: var(--ink);
 }
 
 @media (max-width: 720px) {

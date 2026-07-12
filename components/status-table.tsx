@@ -17,18 +17,13 @@ import type {
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatLocalTime } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n/context";
 
 interface StatusTableProps {
   timelines: ProviderTimeline[];
   availabilityStats: AvailabilityStatsMap;
   selectedPeriod: AvailabilityPeriod;
 }
-
-const PERIOD_LABEL: Record<AvailabilityPeriod, string> = {
-  "7d": "近 7 天",
-  "15d": "近 15 天",
-  "30d": "近 30 天",
-};
 
 function pctColor(pct: number | null | undefined) {
   if (pct == null) return "text-muted-foreground";
@@ -49,13 +44,18 @@ export function StatusTable({
   availabilityStats,
   selectedPeriod,
 }: StatusTableProps) {
+  const { t } = useLocale();
+  const PERIOD_LABEL: Record<AvailabilityPeriod, string> = {
+    "7d": t.table.period7d,
+    "15d": t.table.period15d,
+    "30d": t.table.period30d,
+  };
+
   if (timelines.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white/40 px-6 py-12 text-center backdrop-blur">
         <CircleDashed className="h-8 w-8 text-muted-foreground/50" />
-        <p className="text-sm text-muted-foreground">
-          暂无 provider 配置或探测数据。请检查 <code className="rounded bg-muted px-1.5 font-mono">data/providers.json</code>。
-        </p>
+        <p className="text-sm text-muted-foreground">{t.table.emptyHint}</p>
       </div>
     );
   }
@@ -77,28 +77,28 @@ export function StatusTable({
           </colgroup>
           <thead className="bg-white/70 backdrop-blur">
             <tr className="h-9 text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-              <Th className="pl-4">服务商</Th>
-              <Th>服务</Th>
-              <Th>通道</Th>
-              <Th>模型</Th>
-              <Th>价格</Th>
-              <Th className="text-center">收录天数</Th>
-              <Th className="text-right">可用率</Th>
-              <Th>最后监测</Th>
+              <Th className="pl-4">{t.table.vendor}</Th>
+              <Th>{t.table.service}</Th>
+              <Th>{t.table.channel}</Th>
+              <Th>{t.table.model}</Th>
+              <Th>{t.table.price}</Th>
+              <Th className="text-center">{t.table.coverage}</Th>
+              <Th className="text-right">{t.table.availability}</Th>
+              <Th>{t.table.lastCheck}</Th>
               <Th className="pr-4">
-                可用率趋势
+                {t.table.trend}
                 <span className="ml-1.5 text-[9.5px] tracking-normal opacity-70">
-                  [{PERIOD_LABEL[selectedPeriod]}]
+                  {t.table.trendSuffix(PERIOD_LABEL[selectedPeriod])}
                 </span>
               </Th>
             </tr>
           </thead>
           <tbody>
-            {timelines.map((t, i) => (
+            {timelines.map((tl, i) => (
               <Row
-                key={t.id}
-                timeline={t}
-                stats={availabilityStats[t.id]}
+                key={tl.id}
+                timeline={tl}
+                stats={availabilityStats[tl.id]}
                 selectedPeriod={selectedPeriod}
                 striped={i % 2 === 1}
               />
@@ -140,10 +140,11 @@ function Row({
   selectedPeriod: AvailabilityPeriod;
   striped?: boolean;
 }) {
+  const { t } = useLocale();
   const latest = timeline.latest;
   const models = latest.models && latest.models.length > 0 ? latest.models : [latest.model];
   const vendorLabel = latest.vendor ?? latest.type.toUpperCase();
-  const channel = latest.groupName ?? "默认渠道";
+  const channel = latest.groupName ?? t.table.defaultChannel;
   const currentStat = stats?.find((s) => s.period === selectedPeriod);
   const pct = currentStat?.availabilityPct ?? null;
 
