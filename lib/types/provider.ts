@@ -53,6 +53,14 @@ export interface ProviderConfig {
    * 真实运行天数超过 baseline 后按真实的显示
    */
   baselineDays?: number | null;
+
+  /**
+   * 探测伪装模板 — 用于绕过上游对客户端的校验
+   *   "claude-code" → 伪装成 Claude Code CLI (常用于 Claude 反向渠道)
+   *   "none" / null → 无伪装
+   * 参考 lib/providers/disguises.ts 里的 DISGUISE_PRESETS
+   */
+  disguise?: string | null;
 }
 
 /**

@@ -109,6 +109,22 @@ data/                   ← ⚠ .gitignore 忽略, 生产运维目录
 - 想监控"同一模型走不同上游"→ 建多条同 `name` 前缀的配置,`groupName` 不同 (`主渠道` / `备用渠道` / `渠道A` / …)
 - Dashboard 会按 `groupName` 分区展示
 
+**Claude 反向渠道 (伪装)**:
+
+Claude 系反向渠道 (走 `/v1/messages`) 通常会校验请求头,只有伪装成官方 Claude Code CLI 才能通过。加 `"disguise": "claude-code"` 就会自动注入:
+- `User-Agent: claude-cli/2.1.114 (external, sdk-cli)`
+- `X-App: cli`
+- `anthropic-beta: claude-code-20250219,...`
+- `anthropic-dangerous-direct-browser-access: true`
+- `anthropic-version: 2023-06-01`
+- Body: `{ metadata: {user_id: "..."}, system: [{text: "You are Claude Code...", type: "text"}] }`
+
+预设定义在 `lib/providers/disguises.ts` — 新增伪装模板改这个文件即可。
+
+**Claude 的两种探测路径**:
+- **原生 `/v1/messages`**: `type: "anthropic"` + `endpoint: ".../v1/messages"` — 保底方式
+- **OpenAI 兼容**: `type: "openai"` + `endpoint: ".../v1/chat/completions"` + `model: "claude-*"` — 仅适用于把 Claude 转成 OpenAI 格式的中转
+
 ---
 
 ## 已知陷阱

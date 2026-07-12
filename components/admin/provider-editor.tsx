@@ -14,9 +14,9 @@ interface Props {
 
 const VENDOR_OPTIONS = ["Cursor", "OpenAI", "Google", "Anthropic", "xAI", "其他"];
 const TYPE_OPTIONS = [
-  { value: "openai", label: "openai (兼容 Chat Completions)" },
-  { value: "gemini", label: "gemini (原生 API)" },
-  { value: "anthropic", label: "anthropic (原生 Messages)" },
+  { value: "openai", label: "openai (Chat Completions / Responses)" },
+  { value: "anthropic", label: "anthropic (/v1/messages 原生)" },
+  { value: "gemini", label: "gemini (原生 API / OpenAI 兼容)" },
 ];
 const ICON_OPTIONS = [
   { key: "cc", label: "CC · Claude / Cursor" },
@@ -25,6 +25,10 @@ const ICON_OPTIONS = [
   { key: "gm", label: "GM · Gemini" },
   { key: "gk", label: "GK · Grok" },
   { key: "an", label: "AN · Anthropic" },
+];
+const DISGUISE_OPTIONS = [
+  { value: "none", label: "无伪装 (SDK 默认)" },
+  { value: "claude-code", label: "Claude Code CLI (推荐给 Claude 反向渠道)" },
 ];
 
 export function ProviderEditor({ existing, onClose, onSaved, onError }: Props) {
@@ -51,6 +55,7 @@ export function ProviderEditor({ existing, onClose, onSaved, onError }: Props) {
   const [baselineDays, setBaselineDays] = useState<string>(
     existing?.baselineDays ? String(existing.baselineDays) : ""
   );
+  const [disguise, setDisguise] = useState<string>(existing?.disguise ?? "none");
   const [enabled, setEnabled] = useState(existing?.enabled ?? true);
   const [isMaintenance, setIsMaintenance] = useState(existing?.is_maintenance ?? false);
 
@@ -100,6 +105,7 @@ export function ProviderEditor({ existing, onClose, onSaved, onError }: Props) {
           priceRatio: priceRatio || null,
           priceHint: priceHint || null,
           baselineDays: baselineDays ? Number(baselineDays) : null,
+          disguise: disguise === "none" ? null : disguise,
           enabled,
           is_maintenance: isMaintenance,
         },
@@ -191,6 +197,24 @@ export function ProviderEditor({ existing, onClose, onSaved, onError }: Props) {
 
             <Field label="Endpoint" required className="col-span-2">
               <Input value={endpoint} onChange={setEndpoint} />
+            </Field>
+
+            <Field
+              label="伪装模板"
+              className="col-span-2"
+              hint="Claude 反向渠道通常要求伪装成 Claude Code CLI 才能通过校验"
+            >
+              <select
+                value={disguise}
+                onChange={(e) => setDisguise(e.target.value)}
+                className="h-8 w-full rounded-full border border-border/60 bg-background/60 px-3 text-xs"
+              >
+                {DISGUISE_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
             </Field>
 
             <Field

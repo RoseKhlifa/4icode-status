@@ -34,6 +34,7 @@ interface ProviderEntry {
   priceHint?: string;
   iconKey?: string;
   baselineDays?: number;
+  disguise?: string;
   requestHeaders?: Record<string, string>;
   metadata?: Record<string, unknown>;
 }
@@ -56,6 +57,7 @@ export interface ProviderSummary {
   priceHint: string | null;
   iconKey: string | null;
   baselineDays: number | null;
+  disguise: string | null;
 }
 
 function resolvePath(): string {
@@ -134,6 +136,7 @@ function toSummary(entry: ProviderEntry): ProviderSummary {
     priceHint: entry.priceHint ?? null,
     iconKey: entry.iconKey ?? null,
     baselineDays: typeof entry.baselineDays === "number" ? entry.baselineDays : null,
+    disguise: entry.disguise ?? null,
   };
 }
 

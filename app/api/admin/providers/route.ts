@@ -33,6 +33,7 @@ interface UpsertBody {
     priceHint?: string | null;
     iconKey?: string | null;
     baselineDays?: number | null;
+    disguise?: string | null;
   };
 }
 
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
       priceHint: e.priceHint ?? undefined,
       iconKey: e.iconKey ?? undefined,
       baselineDays: typeof e.baselineDays === "number" ? e.baselineDays : undefined,
+      disguise: e.disguise ?? undefined,
     },
   });
 

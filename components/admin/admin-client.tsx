@@ -175,7 +175,16 @@ export function AdminClient({ initialProviders }: Props) {
                       </div>
                     </div>
                   </td>
-                  <td className="px-2 py-2 align-middle font-mono text-[11.5px]">{p.type}</td>
+                  <td className="px-2 py-2 align-middle font-mono text-[11.5px]">
+                    <div className="flex flex-col leading-tight">
+                      <span>{p.type}</span>
+                      {p.disguise && p.disguise !== "none" && (
+                        <span className="text-[10px] text-amber-600">
+                          伪装: {p.disguise}
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-2 py-2 align-middle font-mono text-[11.5px]">
                     <div className="flex flex-col leading-tight">
                       <span>{p.model}</span>

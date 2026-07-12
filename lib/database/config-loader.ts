@@ -31,6 +31,7 @@ import crypto from "node:crypto";
 import type { ProviderConfig, ProviderType } from "../types";
 import { registerProviderMeta } from "./history";
 import { getPollingIntervalMs } from "../core/polling-config";
+import { resolveDisguise } from "../providers/disguises";
 import { logError } from "../utils";
 
 interface ConfigCache {
@@ -80,6 +81,8 @@ interface RawProviderEntry {
   priceHint?: string;
   iconKey?: string;
   baselineDays?: number;
+  /** 伪装模板 key, 见 lib/providers/disguises.ts */
+  disguise?: string;
 }
 
 function resolveConfigPath(): string {
@@ -163,6 +166,22 @@ function parseEntries(raw: string): ProviderConfig[] {
     const groupName = (entry.groupName ?? entry.group_name ?? null) || null;
     const id = entry.id?.trim() || stableId({ type, endpoint, model, groupName, apiKey, name });
 
+    // 展开伪装模板 → headers + body metadata
+    // 用户显式配置的 requestHeaders / metadata 优先级更高 (覆盖模板)
+    const disguise = resolveDisguise(entry.disguise);
+    const userHeaders = entry.requestHeaders ?? entry.request_headers ?? null;
+    const userMetadata = entry.metadata ?? null;
+
+    const mergedHeaders: Record<string, string> | null =
+      Object.keys(disguise.headers).length > 0 || userHeaders
+        ? { ...disguise.headers, ...(userHeaders ?? {}) }
+        : null;
+
+    const mergedMetadata: Record<string, unknown> | null =
+      Object.keys(disguise.bodyFields).length > 0 || userMetadata
+        ? { ...disguise.bodyFields, ...(userMetadata ?? {}) }
+        : null;
+
     result.push({
       id,
       name,
@@ -171,8 +190,8 @@ function parseEntries(raw: string): ProviderConfig[] {
       model,
       apiKey,
       is_maintenance: Boolean(entry.is_maintenance),
-      requestHeaders: entry.requestHeaders ?? entry.request_headers ?? null,
-      metadata: entry.metadata ?? null,
+      requestHeaders: mergedHeaders,
+      metadata: mergedMetadata,
       groupName,
 
       // 表格视图扩展 (未提供时用 null, 前端会用 fallback)
@@ -186,6 +205,7 @@ function parseEntries(raw: string): ProviderConfig[] {
       priceHint: entry.priceHint?.trim() || null,
       iconKey: entry.iconKey?.trim() || null,
       baselineDays: typeof entry.baselineDays === "number" ? entry.baselineDays : null,
+      disguise: entry.disguise?.trim() || null,
     });
   }
   return result;
