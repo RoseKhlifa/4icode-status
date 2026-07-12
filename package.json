@@ -4,9 +4,9 @@
   "private": true,
   "description": "4i.codes 实时接口状态看板 · 基于 check-cx 二开",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8800",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8800",
     "lint": "eslint"
   },
   "dependencies": {

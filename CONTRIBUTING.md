@@ -145,7 +145,7 @@ cp data/providers.example.json data/providers.json
 # 编辑 data/providers.json 填真实探测 key
 npm run dev
 ```
-访问 `http://localhost:3000/`。首屏会立即触发一次探测,60s 后自动再探。
+访问 `http://localhost:8800/`。首屏会立即触发一次探测,60s 后自动再探。
 
 **看数据库**:
 ```bash
@@ -165,7 +165,7 @@ sqlite> SELECT config_id, status, checked_at FROM check_history ORDER BY checked
 docker compose build
 docker compose up -d
 ```
-nginx 反代 `4i.codes/status/` → `127.0.0.1:3000`,数据卷挂 `./data:/app/data`。
+nginx 反代 `4i.codes/status/` → `127.0.0.1:8800`,数据卷挂 `./data:/app/data`。
 
 ---
 

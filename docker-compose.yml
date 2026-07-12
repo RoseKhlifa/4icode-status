@@ -5,7 +5,7 @@ services:
     container_name: 4icode-status
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "8800:8800"
     env_file:
       - .env
     environment:

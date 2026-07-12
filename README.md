@@ -6,6 +6,10 @@
 - 保留 shadcn/ui + Tailwind 4 前端框架、Vercel AI SDK 探测框架
 - **移除 Supabase 依赖**,改用本地 **SQLite** (better-sqlite3) 持久化历史
 - **多渠道支持** — 每一份 provider 配置带 `groupName` 字段,同一个模型可以配多条 (不同 apiKey → 不同渠道) 分组显示
+- **管理后台** — 无需 SSH 手工改文件,`/admin` 密码登录后可视化增删改 provider
+
+> 📘 **完整部署清单看 [DEPLOY.md](./DEPLOY.md)**(git clone / tar 两种首次部署方式、nginx 反代、数据备份、忘密码、常见错误全在里面)
+> 🛠️ **改代码 / 二开先看 [CONTRIBUTING.md](./CONTRIBUTING.md)**(目录导览、常见改动指引、已知陷阱)
 
 ---
 
@@ -62,7 +66,7 @@ npm install
 
 ### 4. 起服务
 ```bash
-npm run dev              # http://localhost:3000
+npm run dev              # http://localhost:8800
 # 或生产:
 npm run build && npm start
 ```

@@ -28,7 +28,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
-ENV PORT=3000
+ENV PORT=8800
 
 # alpine 需要 libstdc++ 才能加载 native .node
 RUN apk add --no-cache libstdc++
@@ -49,7 +49,7 @@ RUN mkdir -p /app/data && chown -R nextjs:nodejs /app
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 8800
 VOLUME ["/app/data"]
 
 CMD ["node", "server.js"]
