@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -19,10 +17,13 @@ export default function AdminLoginPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ password }),
+          credentials: "same-origin",
         });
         if (res.ok) {
-          router.push("/admin");
-          router.refresh();
+          // 硬跳转 (整页刷新) 保证浏览器把新落地的 cookie 带过去
+          // 用 router.push 会走客户端跳转, 时序上 server component 可能
+          // 早于 cookie 落地就跑 requireAuth() 又被 redirect 回来
+          window.location.href = "/admin";
           return;
         }
         const data = (await res.json().catch(() => ({}))) as { error?: string };

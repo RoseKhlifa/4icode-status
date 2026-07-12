@@ -114,6 +114,7 @@ export function ProviderEditor({ existing, onClose, onSaved, onError }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
+        credentials: "same-origin",
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string };

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStoredHash, verifyPassword, ensureInitialPassword } from "@/lib/admin/credentials";
-import { buildCookie, createSession } from "@/lib/admin/session";
+import { buildCookie, createSession, isRequestSecure } from "@/lib/admin/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,8 +33,7 @@ export async function POST(request: Request) {
   }
 
   const { token, expiresAt } = createSession();
-  const isProd = process.env.NODE_ENV === "production";
   const res = NextResponse.json({ ok: true, expiresAt: expiresAt.toISOString() });
-  res.headers.set("Set-Cookie", buildCookie(token, expiresAt, isProd));
+  res.headers.set("Set-Cookie", buildCookie(token, expiresAt, isRequestSecure(request)));
   return res;
 }

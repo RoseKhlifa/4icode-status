@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { LogOut, Pencil, Plus, Settings2, Trash2 } from "lucide-react";
 import type { ProviderSummary } from "@/lib/admin/providers-store";
 import { ProviderEditor } from "@/components/admin/provider-editor";
@@ -14,7 +13,6 @@ interface Props {
 }
 
 export function AdminClient({ initialProviders }: Props) {
-  const router = useRouter();
   const [providers, setProviders] = useState<ProviderSummary[]>(initialProviders);
   const [editing, setEditing] = useState<ProviderSummary | null>(null);
   const [creating, setCreating] = useState(false);
@@ -28,7 +26,10 @@ export function AdminClient({ initialProviders }: Props) {
 
   const reload = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/providers", { cache: "no-store" });
+      const res = await fetch("/api/admin/providers", {
+        cache: "no-store",
+        credentials: "same-origin",
+      });
       if (!res.ok) throw new Error("reload_failed");
       const data = (await res.json()) as { providers: ProviderSummary[] };
       setProviders(data.providers);
@@ -47,6 +48,7 @@ export function AdminClient({ initialProviders }: Props) {
           body: JSON.stringify({
             key: { name: p.name, groupName: p.groupName, model: p.model },
           }),
+          credentials: "same-origin",
         });
         if (!res.ok) throw new Error();
         showFlash("ok", "已删除");
@@ -59,10 +61,12 @@ export function AdminClient({ initialProviders }: Props) {
   );
 
   const handleLogout = useCallback(async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
-    router.refresh();
-  }, [router]);
+    await fetch("/api/admin/logout", {
+      method: "POST",
+      credentials: "same-origin",
+    });
+    window.location.href = "/admin/login";
+  }, []);
 
   const grouped = useMemo(() => {
     const map = new Map<string, ProviderSummary[]>();

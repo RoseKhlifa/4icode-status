@@ -40,6 +40,7 @@ export function PasswordDialog({ onClose, onDone, onError }: Props) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword: current, newPassword: next }),
+        credentials: "same-origin",
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string };

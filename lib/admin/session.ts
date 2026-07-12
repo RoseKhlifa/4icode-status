@@ -73,9 +73,40 @@ export async function requireAuth(): Promise<boolean> {
 }
 
 /**
- * 用于构造 Set-Cookie header 值
+ * 判断当前请求是不是 https
+ *
+ * 支持 3 种来源:
+ *   - X-Forwarded-Proto (nginx 反代常见)
+ *   - Forwarded (RFC 7239)
+ *   - request.url 的 protocol
+ *
+ * 只有真的 https 才在 cookie 上加 Secure 标记, 否则 http 直连会静默丢 cookie.
  */
-export function buildCookie(token: string, expiresAt: Date, isProd: boolean): string {
+export function isRequestSecure(request: Request): boolean {
+  const forwardedProto =
+    request.headers.get("x-forwarded-proto") ??
+    request.headers.get("x-forwarded-protocol");
+  if (forwardedProto) {
+    return forwardedProto.split(",")[0].trim().toLowerCase() === "https";
+  }
+  const forwarded = request.headers.get("forwarded");
+  if (forwarded) {
+    // e.g. "for=1.2.3.4;proto=https"
+    const m = forwarded.match(/proto=([^;,\s]+)/i);
+    if (m) return m[1].toLowerCase() === "https";
+  }
+  try {
+    return new URL(request.url).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 用于构造 Set-Cookie header 值
+ * isSecure 决定要不要加 Secure 标记 (http 直连必须 false, 否则浏览器会丢 cookie)
+ */
+export function buildCookie(token: string, expiresAt: Date, isSecure: boolean): string {
   const parts = [
     `${COOKIE_NAME}=${token}`,
     `Path=/`,
@@ -83,11 +114,11 @@ export function buildCookie(token: string, expiresAt: Date, isProd: boolean): st
     `SameSite=Lax`,
     `Expires=${expiresAt.toUTCString()}`,
   ];
-  if (isProd) parts.push("Secure");
+  if (isSecure) parts.push("Secure");
   return parts.join("; ");
 }
 
-export function buildClearCookie(isProd: boolean): string {
+export function buildClearCookie(isSecure: boolean): string {
   const parts = [
     `${COOKIE_NAME}=`,
     `Path=/`,
@@ -95,6 +126,6 @@ export function buildClearCookie(isProd: boolean): string {
     `SameSite=Lax`,
     `Expires=Thu, 01 Jan 1970 00:00:00 GMT`,
   ];
-  if (isProd) parts.push("Secure");
+  if (isSecure) parts.push("Secure");
   return parts.join("; ");
 }
