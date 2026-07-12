@@ -44,6 +44,23 @@ function ensureSchema(db: Database.Database): void {
 
     CREATE INDEX IF NOT EXISTS idx_check_history_time
       ON check_history (checked_at);
+
+    -- 管理端: 密码存这里, 首次启动自动生成
+    CREATE TABLE IF NOT EXISTS admin_credentials (
+      id INTEGER PRIMARY KEY CHECK (id = 1),
+      password_hash TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    -- 管理端: 会话 (可选; 也可以纯 stateless HMAC cookie)
+    CREATE TABLE IF NOT EXISTS admin_sessions (
+      token TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires
+      ON admin_sessions (expires_at);
   `);
 }
 

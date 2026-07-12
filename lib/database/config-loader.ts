@@ -79,6 +79,7 @@ interface RawProviderEntry {
   priceRatio?: string;
   priceHint?: string;
   iconKey?: string;
+  baselineDays?: number;
 }
 
 function resolveConfigPath(): string {
@@ -184,6 +185,7 @@ function parseEntries(raw: string): ProviderConfig[] {
       priceRatio: entry.priceRatio?.trim() || null,
       priceHint: entry.priceHint?.trim() || null,
       iconKey: entry.iconKey?.trim() || null,
+      baselineDays: typeof entry.baselineDays === "number" ? entry.baselineDays : null,
     });
   }
   return result;
@@ -235,6 +237,7 @@ export async function loadProviderConfigsFromDB(options?: {
       priceRatio: c.priceRatio ?? null,
       priceHint: c.priceHint ?? null,
       iconKey: c.iconKey ?? null,
+      baselineDays: c.baselineDays ?? null,
     }))
   );
 

@@ -46,6 +46,13 @@ export interface ProviderConfig {
 
   /** 手动图标 key, 如 "cc" "gm" "cx" "oa" "an" — 对应 vendor-badge.tsx 里的预设 */
   iconKey?: string | null;
+
+  /**
+   * 稳定运行基线天数 (对外展示的最小值)
+   * StatusTable "收录"列会显示 max(realDays, baselineDays)
+   * 真实运行天数超过 baseline 后按真实的显示
+   */
+  baselineDays?: number | null;
 }
 
 /**

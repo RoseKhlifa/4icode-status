@@ -147,7 +147,7 @@
   body {
     @apply relative min-h-screen bg-background text-foreground;
     font-family: var(--font-sans);
-    padding-top: 88px;
+    padding-top: 76px;
   }
 
   body::before {
@@ -299,6 +299,6 @@
     justify-content: flex-end;
   }
   body {
-    padding-top: 72px;
+    padding-top: 68px;
   }
 }

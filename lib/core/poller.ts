@@ -125,6 +125,23 @@ if (!getPollerTimer()) {
   console.log(
     `[status] 初始化后台轮询器，interval=${POLL_INTERVAL_MS}ms，首次探测预计 ${firstCheckAt}`
   );
+
+  // 首次启动: 生成管理端初始密码
+  try {
+    // 动态 import 以避免 poller 循环依赖 (credentials -> sqlite -> ...)
+    import("../admin/credentials")
+      .then(({ ensureInitialPassword }) => {
+        try {
+          ensureInitialPassword();
+        } catch (err) {
+          console.error("[status] 初始化管理密码失败", err);
+        }
+      })
+      .catch((err) => console.error("[status] 加载 credentials 模块失败", err));
+  } catch (err) {
+    console.error("[status] 密码初始化未启动", err);
+  }
+
   const timer = setInterval(() => {
     tick().catch((error) => console.error("[status] 定时探测失败", error));
   }, POLL_INTERVAL_MS);

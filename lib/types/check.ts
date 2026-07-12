@@ -42,4 +42,7 @@ export interface CheckResult {
   priceRatio?: string | null;
   priceHint?: string | null;
   iconKey?: string | null;
+  baselineDays?: number | null;
+  /** 真实探测过的最早日期距今的天数 (由 dashboard-data 计算) */
+  realCoverageDays?: number | null;
 }

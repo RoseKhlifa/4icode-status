@@ -138,6 +138,20 @@ async function loadDashboardDataInternal(options?: {
 
     const providerTimelines = buildProviderTimelines(history, maintenanceConfigs);
 
+    // 计算每个 provider 的真实收录天数 (基于该 provider 最早一条历史)
+    const nowMs = Date.now();
+    for (const timeline of providerTimelines) {
+      const items = timeline.items;
+      let earliest = items.length > 0 ? items[items.length - 1].checkedAt : null;
+      if (earliest) {
+        const dayMs = 24 * 60 * 60 * 1000;
+        const days = Math.max(0, Math.floor((nowMs - Date.parse(earliest)) / dayMs));
+        timeline.latest.realCoverageDays = days;
+      } else {
+        timeline.latest.realCoverageDays = null;
+      }
+    }
+
     let lastUpdated: string | null = null;
     let lastUpdatedMs = 0;
     for (const timeline of providerTimelines) {

@@ -3,8 +3,7 @@
 /**
  * 4i.codes 状态看板核心表格
  *
- * 布局对标用户提供的 IKunCode 状态监控截图 (但保持 4i 米黄墨主题):
- *   服务商 | 服务 | 通道 | 模型 | 价格 | 收录 | 可用率 | 最后监测 | 90 格监控条
+ * 收紧版: 减少列 padding、行高更紧、监控条更长, 让内容更"实"
  */
 
 import { CircleDashed } from "lucide-react";
@@ -52,8 +51,8 @@ export function StatusTable({
 }: StatusTableProps) {
   if (timelines.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white/40 px-6 py-16 text-center backdrop-blur">
-        <CircleDashed className="h-10 w-10 text-muted-foreground/50" />
+      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white/40 px-6 py-12 text-center backdrop-blur">
+        <CircleDashed className="h-8 w-8 text-muted-foreground/50" />
         <p className="text-sm text-muted-foreground">
           暂无 provider 配置或探测数据。请检查 <code className="rounded bg-muted px-1.5 font-mono">data/providers.json</code>。
         </p>
@@ -64,10 +63,21 @@ export function StatusTable({
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-white/40 backdrop-blur">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1080px] border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-white/70 backdrop-blur">
-            <tr className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              <Th className="pl-5">服务商</Th>
+        <table className="w-full min-w-[1080px] table-fixed border-collapse text-sm">
+          <colgroup>
+            <col className="w-[10%]" /> {/* 服务商 */}
+            <col className="w-[7%]" /> {/* 服务 badge */}
+            <col className="w-[9%]" /> {/* 通道 */}
+            <col className="w-[16%]" /> {/* 模型 */}
+            <col className="w-[6%]" /> {/* 价格 */}
+            <col className="w-[5%]" /> {/* 收录 */}
+            <col className="w-[7%]" /> {/* 可用率 */}
+            <col className="w-[9%]" /> {/* 最后监测 */}
+            <col /> {/* 趋势条: 占满剩余 */}
+          </colgroup>
+          <thead className="bg-white/70 backdrop-blur">
+            <tr className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+              <Th className="pl-4">服务商</Th>
               <Th>服务</Th>
               <Th>通道</Th>
               <Th>模型</Th>
@@ -81,7 +91,7 @@ export function StatusTable({
                 最后
                 <div className="text-[9px] normal-case tracking-normal opacity-70">监测</div>
               </Th>
-              <Th className="pr-5">
+              <Th className="pr-4">
                 可用率趋势
                 <span className="ml-1 text-[9px] normal-case tracking-normal opacity-70">
                   [{PERIOD_LABEL[selectedPeriod]}]
@@ -106,9 +116,6 @@ export function StatusTable({
   );
 }
 
-/* ============================================================
- * 表头 <th>
- * ============================================================ */
 function Th({
   children,
   className,
@@ -119,7 +126,7 @@ function Th({
   return (
     <th
       className={cn(
-        "border-b border-border/40 px-3 py-3 text-left align-bottom font-semibold",
+        "border-b border-border/40 px-2 py-2 text-left align-bottom font-semibold",
         className
       )}
     >
@@ -128,9 +135,6 @@ function Th({
   );
 }
 
-/* ============================================================
- * 单行
- * ============================================================ */
 function Row({
   timeline,
   stats,
@@ -145,7 +149,6 @@ function Row({
   const latest = timeline.latest;
   const models = latest.models && latest.models.length > 0 ? latest.models : [latest.model];
   const vendorLabel = latest.vendor ?? latest.type.toUpperCase();
-  const service = latest.service ?? latest.name;
   const channel = latest.groupName ?? "默认渠道";
   const currentStat = stats?.find((s) => s.period === selectedPeriod);
   const pct = currentStat?.availabilityPct ?? null;
@@ -158,45 +161,43 @@ function Row({
       )}
     >
       {/* 服务商 */}
-      <td className="pl-5 pr-3 py-3 align-middle">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2 font-semibold text-foreground">
-            {latest.name}
-          </div>
-          <span className="text-[11px] text-muted-foreground">{vendorLabel}</span>
+      <td className="pl-4 pr-2 py-2 align-middle">
+        <div className="flex flex-col leading-tight">
+          <span className="font-semibold text-foreground">{latest.name}</span>
+          <span className="text-[10.5px] text-muted-foreground">{vendorLabel}</span>
         </div>
       </td>
 
       {/* 服务 (品牌 badge) */}
-      <td className="px-3 py-3 align-middle">
+      <td className="px-2 py-2 align-middle">
         <VendorBadge iconKey={latest.iconKey} vendor={latest.vendor} />
       </td>
 
       {/* 通道 */}
-      <td className="px-3 py-3 align-middle">
-        <div className="flex items-center gap-2 text-foreground/80">
-          <span className={cn("h-1.5 w-1.5 rounded-full", statusDot(latest.status))} />
-          <span>{channel}</span>
+      <td className="px-2 py-2 align-middle">
+        <div className="flex items-center gap-1.5 text-[12.5px] text-foreground/85">
+          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", statusDot(latest.status))} />
+          <span className="truncate">{channel}</span>
         </div>
       </td>
 
       {/* 模型 */}
-      <td className="px-3 py-3 align-middle">
-        <div className="flex flex-col gap-0.5 font-mono text-[12px] text-foreground/85">
+      <td className="px-2 py-2 align-middle">
+        <div className="flex flex-col gap-0 font-mono text-[11.5px] leading-tight text-foreground/85">
           {models.slice(0, 4).map((m) => (
             <span key={m} className="truncate">
               {m}
             </span>
           ))}
           {models.length > 4 && (
-            <span className="text-[10px] text-muted-foreground">+{models.length - 4} more</span>
+            <span className="text-[10px] text-muted-foreground">+{models.length - 4}</span>
           )}
         </div>
       </td>
 
       {/* 价格 */}
-      <td className="px-3 py-3 align-middle">
-        <div className="flex flex-col font-mono text-[12px] leading-tight">
+      <td className="px-2 py-2 align-middle">
+        <div className="flex flex-col font-mono text-[11.5px] leading-tight">
           {latest.priceRatio && (
             <span className="text-foreground">{latest.priceRatio}</span>
           )}
@@ -209,46 +210,63 @@ function Row({
         </div>
       </td>
 
-      {/* 收录天数 (由 30d 窗口的样本数换算, 简化: 有历史 = "-" 兜底显示) */}
-      <td className="px-3 py-3 text-center align-middle text-muted-foreground/60 font-mono text-xs">
-        —
+      {/* 收录天数: max(realCoverageDays, baselineDays) */}
+      <td className="px-2 py-2 text-center align-middle font-mono text-[11.5px] text-foreground/80">
+        {formatCoverage(latest.realCoverageDays, latest.baselineDays)}
       </td>
 
       {/* 可用率 */}
-      <td className="px-3 py-3 text-right align-middle">
-        <span className={cn("font-mono text-[15px] font-bold", pctColor(pct))}>
+      <td className="px-2 py-2 text-right align-middle">
+        <span className={cn("font-mono text-[13px] font-bold", pctColor(pct))}>
           {pct == null ? "—" : `${pct.toFixed(pct >= 99 ? 0 : 2)}%`}
         </span>
       </td>
 
-      {/* 最后监测 (延迟 + 时间) */}
-      <td className="px-3 py-3 align-middle">
+      {/* 最后监测 */}
+      <td className="px-2 py-2 align-middle">
         <div className="flex flex-col leading-tight">
-          <span className="flex items-center gap-1.5 font-mono text-[12px]">
-            <span className={cn("h-1.5 w-1.5 rounded-full", statusDot(latest.status))} />
+          <span className="flex items-center gap-1 font-mono text-[11.5px]">
+            <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", statusDot(latest.status))} />
             <span className="text-foreground">
               {latest.latencyMs != null ? `${latest.latencyMs}ms` : "—"}
             </span>
           </span>
-          <span className="pl-3 font-mono text-[10px] text-muted-foreground/80">
+          <span className="pl-2.5 font-mono text-[10px] text-muted-foreground/80">
             {formatLastTime(latest.checkedAt)}
           </span>
         </div>
       </td>
 
-      {/* 90 格监控条 */}
-      <td className="pl-3 pr-5 py-3 align-middle">
-        <StatusStrip items={timeline.items} slots={45} />
+      {/* 监控条 */}
+      <td className="pl-2 pr-4 py-2 align-middle">
+        <StatusStrip items={timeline.items} slots={60} />
       </td>
     </tr>
   );
 }
 
-/** 只取 HH:mm 部分 (图片里"14:17"那种) */
+/** 只取 HH:mm */
 function formatLastTime(iso: string): string {
   const full = formatLocalTime(iso);
-  // formatLocalTime 输出如 "2026/07/12 14:17:23"; 取空格后的 HH:mm
   const parts = full.split(" ");
   const hm = parts[1] ?? full;
   return hm.split(":").slice(0, 2).join(":");
+}
+
+/**
+ * 显示 max(real, baseline) 天数
+ *   - 都无 → "—"
+ *   - 只有 baseline → baseline
+ *   - 只有 real → real
+ *   - 都有 → max
+ */
+function formatCoverage(
+  real: number | null | undefined,
+  baseline: number | null | undefined
+): string {
+  const r = typeof real === "number" && Number.isFinite(real) ? real : null;
+  const b = typeof baseline === "number" && Number.isFinite(baseline) ? baseline : null;
+  if (r == null && b == null) return "—";
+  const days = Math.max(r ?? 0, b ?? 0);
+  return `${days}d`;
 }

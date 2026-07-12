@@ -54,6 +54,7 @@ interface ProviderMeta {
   priceRatio?: string | null;
   priceHint?: string | null;
   iconKey?: string | null;
+  baselineDays?: number | null;
 }
 
 let providerMetaLookup: Map<string, ProviderMeta> = new Map();
@@ -85,6 +86,7 @@ function rowToResult(row: HistoryRow): CheckResult | null {
     priceRatio: meta.priceRatio ?? null,
     priceHint: meta.priceHint ?? null,
     iconKey: meta.iconKey ?? null,
+    baselineDays: meta.baselineDays ?? null,
   };
 }
 

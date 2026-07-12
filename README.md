@@ -34,7 +34,8 @@ npm install
 ```
 
 ### 3. 写 provider 配置
-在项目根建 `data/providers.json` (被 `.gitignore` 忽略):
+
+**推荐用管理后台**(见下方"管理后台"章节)。也可以手工建 `data/providers.json` (被 `.gitignore` 忽略):
 ```jsonc
 [
   {
@@ -69,6 +70,34 @@ npm run build && npm start
 
 ---
 
+## 管理后台
+
+访问 `/admin/login`,首次启动时服务器日志会打印一次性密码:
+
+```
+╔══════════════════════════════════════════════════════════╗
+║  4i.codes status — 管理端首次启动                        ║
+║  URL:      /admin/login                                  ║
+║  Password: 5xC9tRp2mQ8n                                  ║
+║  ⚠ 请立即登录并到设置里修改密码                          ║
+╚══════════════════════════════════════════════════════════╝
+```
+
+登录后可以:
+- **新增/编辑/删除 provider**(直接写回 `data/providers.json`)
+- **修改密码**(存 SQLite `admin_credentials`,scrypt 哈希)
+- **设置基线天数**(`baselineDays` — "收录"列会展示 `max(实际天数, baselineDays)`)
+
+API key **无回显**:列表里只显示 `sk-****xxxx` 后 4 位,编辑时留空则保留原值,填新值即替换。
+
+如果忘记密码,SSH 到服务器:
+```bash
+sqlite3 /root/status/data/status.db "DELETE FROM admin_credentials"
+# 重启服务, 日志会再次打印一次性密码
+```
+
+---
+
 ## 环境变量
 
 | 变量 | 默认 | 说明 |
@@ -76,6 +105,7 @@ npm run build && npm start
 | `PROVIDERS_JSON` | — | 整段 provider 配置 JSON;优先级高于文件 |
 | `STATUS_PROVIDERS_PATH` | `data/providers.json` | provider 配置文件路径 |
 | `STATUS_DB_PATH` | `data/status.db` | SQLite 数据文件路径 |
+| `ADMIN_INITIAL_PASSWORD` | 随机 12 位 | 首次启动指定初始密码;省略则日志打印随机值 |
 | `CHECK_POLL_INTERVAL_SECONDS` | `60` | 探测间隔 (15-600) |
 | `CHECK_CONCURRENCY` | `5` | 单批并发数 (1-20) |
 | `HISTORY_RETENTION_DAYS` | `30` | 历史保留天数 (7-365) |
