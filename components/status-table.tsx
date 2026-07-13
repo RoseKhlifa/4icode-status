@@ -62,9 +62,27 @@ export function StatusTable({
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-white/40 backdrop-blur">
-      {/* 手机上表格必然横向滚动, 加左右阴影提示还有内容 */}
+      {/* ============================================================
+       * 手机版: 卡片列表 (每个 provider 一张卡)
+       * 桌面版: 大宽表格 (与之前一致)
+       * 通过 tailwind `md:hidden` / `hidden md:block` 切换
+       * ============================================================ */}
+
+      {/* 移动版卡片列表 */}
+      <div className="flex flex-col divide-y divide-border/40 md:hidden">
+        {timelines.map((tl) => (
+          <MobileCard
+            key={tl.id}
+            timeline={tl}
+            stats={availabilityStats[tl.id]}
+            selectedPeriod={selectedPeriod}
+          />
+        ))}
+      </div>
+
+      {/* 桌面版表格 */}
       <div
-        className="overflow-x-auto"
+        className="hidden md:block overflow-x-auto"
         style={{
           backgroundImage:
             "linear-gradient(to right, rgba(255,252,246,0.95) 30%, rgba(255,252,246,0)), linear-gradient(to right, rgba(255,252,246,0), rgba(255,252,246,0.95) 70%), radial-gradient(farthest-side at 0 50%, rgba(0,0,0,0.12), rgba(0,0,0,0)), radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,0.12), rgba(0,0,0,0))",
@@ -275,4 +293,121 @@ function formatCoverage(
   if (r == null && b == null) return "—";
   const days = Math.max(r ?? 0, b ?? 0);
   return `${days}d`;
+}
+
+/**
+ * 移动版卡片: 单个 provider
+ *
+ * 布局 (从上到下):
+ *   [top row]  Vendor 名 · 品牌 badge          ·         状态灯 + 可用率 %
+ *   [channel]  通道名                                    最后监测 latency + 时间
+ *   [models]   模型列表 (最多 4 个 + "+N" 汇总)
+ *   [strip]    监控条 (全宽)
+ *   [meta]     收录 xxd · 价格
+ */
+function MobileCard({
+  timeline,
+  stats,
+  selectedPeriod,
+}: {
+  timeline: ProviderTimeline;
+  stats: AvailabilityStat[] | undefined;
+  selectedPeriod: AvailabilityPeriod;
+}) {
+  const { t } = useLocale();
+  const latest = timeline.latest;
+  const models = latest.models && latest.models.length > 0 ? latest.models : [latest.model];
+  const vendorLabel = latest.vendor ?? latest.type.toUpperCase();
+  const channel = latest.groupName ?? t.table.defaultChannel;
+  const currentStat = stats?.find((s) => s.period === selectedPeriod);
+  const pct = currentStat?.availabilityPct ?? null;
+
+  return (
+    <div className="flex flex-col gap-2.5 px-4 py-4">
+      {/* 第 1 行: 服务商 + badge  |  可用率 */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[15px] font-semibold text-foreground">
+              {latest.name}
+            </div>
+            <div className="truncate text-[11px] text-muted-foreground">
+              {vendorLabel}
+            </div>
+          </div>
+          <VendorBadge iconKey={latest.iconKey} vendor={latest.vendor} />
+        </div>
+        <div className="flex flex-col items-end leading-tight">
+          <span
+            className={cn("font-mono text-[16px] font-bold", pctColor(pct))}
+          >
+            {pct == null ? "—" : `${pct.toFixed(pct >= 99 ? 0 : 2)}%`}
+          </span>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">
+            {t.table.availability}
+          </span>
+        </div>
+      </div>
+
+      {/* 第 2 行: 通道 (含状态灯) · 最后监测 */}
+      <div className="flex items-center justify-between gap-3 text-[12px]">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <span
+            className={cn(
+              "h-1.5 w-1.5 shrink-0 rounded-full",
+              statusDot(latest.status)
+            )}
+          />
+          <span className="truncate text-foreground/85">{channel}</span>
+        </div>
+        <div className="flex shrink-0 items-center gap-1 font-mono text-[11px] text-muted-foreground">
+          <span className="text-foreground/80">
+            {latest.latencyMs != null ? `${latest.latencyMs}ms` : "—"}
+          </span>
+          <span>·</span>
+          <span>{formatLastTime(latest.checkedAt)}</span>
+        </div>
+      </div>
+
+      {/* 第 3 行: 模型列表 */}
+      <div className="flex flex-wrap gap-x-2 gap-y-0.5 font-mono text-[11px] leading-relaxed text-foreground/70">
+        {models.slice(0, 4).map((m) => (
+          <span key={m} className="truncate">
+            {m}
+          </span>
+        ))}
+        {models.length > 4 && (
+          <span className="text-muted-foreground">
+            +{models.length - 4}
+          </span>
+        )}
+      </div>
+
+      {/* 第 4 行: 监控条 */}
+      <div className="pt-1">
+        <StatusStrip items={timeline.items} slots={40} />
+      </div>
+
+      {/* 第 5 行: 元信息 */}
+      <div className="flex items-center gap-3 text-[10.5px] uppercase tracking-wider text-muted-foreground/80">
+        <span>
+          {t.table.coverage}{" "}
+          <span className="font-mono normal-case text-foreground/70">
+            {formatCoverage(latest.realCoverageDays, latest.baselineDays)}
+          </span>
+        </span>
+        {(latest.priceRatio || latest.priceHint) && (
+          <>
+            <span>·</span>
+            <span className="truncate">
+              {t.table.price}{" "}
+              <span className="font-mono normal-case text-foreground/70">
+                {latest.priceRatio ?? latest.priceHint}
+              </span>
+            </span>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
