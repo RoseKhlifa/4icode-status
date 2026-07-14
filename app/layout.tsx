@@ -3,6 +3,7 @@ import "./globals.css";
 import "@/lib/core/poller";
 import NextTopLoader from "nextjs-toploader";
 import { TopBar } from "@/components/top-bar";
+import { EmbedMode } from "@/components/embed-mode";
 import { LocaleProvider } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +36,8 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning className={cn("font-mono")}>
       <body className="antialiased">
         <NextTopLoader color="var(--ink)" showSpinner={false} />
+        {/* embed=1 时给 <html> 加 .embed-mode 隐藏顶栏/页脚 (给 iframe 用) */}
+        <EmbedMode />
         <LocaleProvider>
           <TopBar />
           {children}

@@ -339,3 +339,35 @@
     padding-top: 100px;
   }
 }
+
+/* ============================================================
+ * Embed 模式 (由 ?embed=1 触发, 见 components/embed-mode.tsx)
+ *
+ * 场景: 4i.codes/console 用 iframe 嵌本页, 不想显示重复的顶栏 / 页脚 / 品牌栏.
+ * 只保留主内容 (DashboardBootstrap 里的过滤条 + 卡片 + 表格).
+ *
+ * body padding-top 用 !important 覆盖原 76 / 100 (不然被 media query 顶回来).
+ * ============================================================ */
+html.embed-mode body {
+  padding-top: 0 !important;
+}
+
+/* 隐藏 4i.codes 品牌胶囊顶栏 */
+html.embed-mode .ficodes-topbar {
+  display: none !important;
+}
+
+/* 隐藏页脚 (© / 版本) */
+html.embed-mode footer {
+  display: none !important;
+}
+
+/* 隐藏 loading 进度条 (顶部, iframe 里冗余) */
+html.embed-mode #nprogress {
+  display: none !important;
+}
+
+/* 主内容自己有 pt-4 md:pt-6, embed 时贴顶更紧凑 */
+html.embed-mode main {
+  padding-top: 0.5rem !important;
+}

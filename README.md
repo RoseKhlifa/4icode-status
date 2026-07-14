@@ -132,6 +132,17 @@ sqlite3 /root/status/data/status.db "DELETE FROM admin_credentials"
 
 - `GET /api/dashboard?trendPeriod=7d|15d|30d` — Dashboard 聚合数据 (带 ETag)
 
+## Embed 模式 (用于 iframe 嵌入)
+
+`4i.codes/console` 里 `/status-monitor` 页面通过 iframe 嵌入本站, 会自动追加 `?embed=1` 让本站隐藏顶栏和页脚, 避免与 console 侧栏重复.
+
+**契约**:
+- URL query 带 `embed=1` (或 `embed=true`) 时启用
+- 见 `components/embed-mode.tsx` (读 query 给 `<html>` 加 `.embed-mode` class)
+- CSS 规则在 `app/globals.css` 最下方(隐藏 `.ficodes-topbar` / `footer` / 撤销 body padding-top)
+
+**手工验证**:直接访问 `https://4i.codes/status?embed=1` → 应该看到只有主内容,没有顶栏没有页脚。
+
 ---
 
 ## 目录
