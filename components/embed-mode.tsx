@@ -7,6 +7,7 @@
  *
  * 契约: URL 带 ?embed=1 (或 ?embed=true) 时启用.
  *   - 给 <html> 加 class="embed-mode"
+ *   - 主题由 ThemeProvider 负责, 本组件只管理嵌入布局
  *   - CSS (globals.css) 匹配 .embed-mode 隐藏 .ficodes-topbar / footer / 撤销 body padding-top
  *
  * 用原生 URLSearchParams 读 window.location.search 而不是 next/navigation 的 useSearchParams,

@@ -85,7 +85,7 @@ function ProviderCardSkeleton() {
 
 function GroupPanelSkeleton({ cardCount = 3 }: { cardCount?: number }) {
   return (
-    <section className="rounded-3xl border bg-white/30 p-4 backdrop-blur-sm dark:bg-black/10 sm:p-6">
+    <section className="rounded-3xl border bg-white/30 p-4 backdrop-blur-sm dark:bg-white/[0.03] sm:p-6">
       <div className="flex items-center justify-between gap-3 sm:gap-4">
         <div className="flex flex-1 min-w-0 items-center gap-3 sm:gap-4">
           <SkeletonBlock className="h-8 w-8 rounded-xl sm:h-10 sm:w-10" />

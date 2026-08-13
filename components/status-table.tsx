@@ -53,7 +53,7 @@ export function StatusTable({
 
   if (timelines.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white/40 px-6 py-12 text-center backdrop-blur">
+      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white/40 px-6 py-12 text-center backdrop-blur dark:bg-white/[0.04]">
         <CircleDashed className="h-8 w-8 text-muted-foreground/50" />
         <p className="text-sm text-muted-foreground">{t.table.emptyHint}</p>
       </div>
@@ -61,7 +61,7 @@ export function StatusTable({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-white/40 backdrop-blur">
+    <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-white/40 backdrop-blur dark:bg-white/[0.04]">
       {/* ============================================================
        * 手机版: 卡片列表 (每个 provider 一张卡)
        * 桌面版: 大宽表格 (与之前一致)
@@ -85,7 +85,7 @@ export function StatusTable({
         className="hidden md:block overflow-x-auto"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(255,252,246,0.95) 30%, rgba(255,252,246,0)), linear-gradient(to right, rgba(255,252,246,0), rgba(255,252,246,0.95) 70%), radial-gradient(farthest-side at 0 50%, rgba(0,0,0,0.12), rgba(0,0,0,0)), radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,0.12), rgba(0,0,0,0))",
+            "linear-gradient(to right, var(--table-scroll-fade) 30%, transparent), linear-gradient(to right, transparent, var(--table-scroll-fade) 70%), radial-gradient(farthest-side at 0 50%, var(--table-scroll-shadow), transparent), radial-gradient(farthest-side at 100% 50%, var(--table-scroll-shadow), transparent)",
           backgroundPosition: "0 0, 100% 0, 0 0, 100% 0",
           backgroundRepeat: "no-repeat",
           backgroundSize: "40px 100%, 40px 100%, 14px 100%, 14px 100%",
@@ -104,7 +104,7 @@ export function StatusTable({
             <col className="w-[9%]" /> {/* 最后监测 */}
             <col /> {/* 趋势条: 占满剩余 */}
           </colgroup>
-          <thead className="bg-white/70 backdrop-blur">
+          <thead className="bg-white/70 backdrop-blur dark:bg-white/[0.07]">
             <tr className="h-11 text-xs uppercase tracking-[0.14em] text-muted-foreground">
               <Th className="pl-5">{t.table.vendor}</Th>
               <Th>{t.table.service}</Th>
@@ -180,8 +180,8 @@ function Row({
   return (
     <tr
       className={cn(
-        "border-b border-border/30 transition-colors hover:bg-white/60",
-        striped && "bg-white/25"
+        "border-b border-border/30 transition-colors hover:bg-white/60 dark:hover:bg-white/[0.08]",
+        striped && "bg-white/25 dark:bg-white/[0.025]"
       )}
     >
       {/* 服务商 */}

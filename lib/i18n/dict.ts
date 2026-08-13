@@ -74,7 +74,7 @@ const zh: Dict = {
     title: "4i.codes 状态监控",
     subtitle: "实时监测 API 中转服务可用性矩阵",
     langTip: "语言 · 中文",
-    themeTip: "米黄浅色主题",
+    themeTip: "浅色 / 深色主题",
     githubTip: "GitHub · 4icode-status",
     shareTip: "分享 4i.codes",
     promo: `4i.codes — For I, For me
@@ -141,7 +141,7 @@ const en: Dict = {
     title: "4i.codes Status",
     subtitle: "Real-time availability matrix for the API gateway",
     langTip: "Language · English",
-    themeTip: "Warm paper theme (light only)",
+    themeTip: "Light / dark theme",
     githubTip: "GitHub · 4icode-status",
     shareTip: "Share 4i.codes",
     promo: `4i.codes — For I, For me

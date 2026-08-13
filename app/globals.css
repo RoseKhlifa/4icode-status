@@ -131,14 +131,51 @@
   --sidebar-accent-foreground: #161311;
   --sidebar-border: rgba(35, 28, 21, 0.14);
   --sidebar-ring: rgba(22, 19, 17, 0.32);
+
+  --table-scroll-fade: rgba(255, 252, 246, 0.95);
+  --table-scroll-shadow: rgba(0, 0, 0, 0.12);
 }
 
-/* 4i.codes 暂只提供浅色主题; .dark 类保留但基本继承 :root */
 .dark {
-  --background: #efe8df;
-  --foreground: #161311;
-  --card: rgba(255, 252, 246, 0.86);
-  --card-foreground: #161311;
+  color-scheme: dark;
+
+  --paper: #0f100f;
+  --paper-deep: #090a09;
+  --paper-warm: rgba(27, 28, 26, 0.94);
+  --ink: #f1ede7;
+  --ink-soft: rgba(241, 237, 231, 0.78);
+  --line: rgba(228, 222, 213, 0.14);
+  --line-soft: rgba(228, 222, 213, 0.075);
+
+  --background: #0f100f;
+  --foreground: #f1ede7;
+  --card: rgba(31, 32, 30, 0.86);
+  --card-foreground: #f1ede7;
+  --popover: rgba(38, 40, 37, 0.98);
+  --popover-foreground: #f1ede7;
+  --primary: #f1ede7;
+  --primary-foreground: #101716;
+  --secondary: rgba(241, 237, 231, 0.08);
+  --secondary-foreground: #f1ede7;
+  --muted: rgba(241, 237, 231, 0.06);
+  --muted-foreground: rgba(241, 237, 231, 0.58);
+  --accent: rgba(114, 170, 179, 0.13);
+  --accent-foreground: #f1ede7;
+  --border: rgba(228, 222, 213, 0.14);
+  --input: rgba(228, 222, 213, 0.14);
+  --ring: rgba(155, 200, 206, 0.42);
+
+  --sidebar: #0f100f;
+  --sidebar-foreground: #f1ede7;
+  --sidebar-primary: #f1ede7;
+  --sidebar-primary-foreground: #101716;
+  --sidebar-accent: rgba(241, 237, 231, 0.08);
+  --sidebar-accent-foreground: #f1ede7;
+  --sidebar-border: rgba(228, 222, 213, 0.14);
+  --sidebar-ring: rgba(155, 200, 206, 0.42);
+
+  --table-scroll-fade: rgba(31, 32, 30, 0.98);
+  --table-scroll-shadow: rgba(0, 0, 0, 0.42);
 }
 
 @layer base {
@@ -165,6 +202,11 @@
       radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.42), transparent 60%),
       radial-gradient(circle at 75% 55%, rgba(230, 220, 205, 0.34), transparent 55%);
     pointer-events: none;
+  }
+
+  .dark body::before {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.012);
   }
 }
 
@@ -269,14 +311,61 @@
   border-radius: 999px;
   background: transparent;
   border: none;
-  cursor: default;
+  padding: 0;
+  cursor: pointer;
   user-select: none;
   color: rgba(22, 18, 15, 0.56);
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.ficodes-topbar-theme:hover {
+  color: var(--ink);
+  background: rgba(35, 28, 21, 0.06);
+}
+
+.ficodes-topbar-theme:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 .ficodes-topbar-theme svg {
   width: 18px;
   height: 18px;
+}
+
+.dark .ficodes-topbar-inner {
+  background: rgba(31, 32, 30, 0.9);
+  border-color: rgba(228, 222, 213, 0.12);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.dark .ficodes-topbar-logo {
+  border-color: rgba(228, 222, 213, 0.12);
+  background: rgba(241, 237, 231, 0.08);
+}
+
+.dark .ficodes-topbar-nav > a {
+  color: rgba(241, 237, 231, 0.6);
+}
+
+.dark .ficodes-topbar-nav > a:hover,
+.dark .ficodes-topbar-nav > a.is-active {
+  color: var(--ink);
+}
+
+.dark .ficodes-topbar-nav > a.is-active::after {
+  background: rgba(241, 237, 231, 0.82);
+}
+
+.dark .ficodes-topbar-theme {
+  color: rgba(241, 237, 231, 0.62);
+}
+
+.dark .ficodes-topbar-theme:hover {
+  color: var(--ink);
+  background: rgba(241, 237, 231, 0.08);
 }
 
 @media (max-width: 720px) {

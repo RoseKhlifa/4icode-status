@@ -3,10 +3,11 @@
 /**
  * 4i.codes 胶囊顶部导航
  * 与首页 / 文档 / 联系 / 关于 视觉一致
- * 主题按钮是哑按钮 (无点击效果、无 tooltip)
  */
 
+import { Moon, Sun } from "lucide-react";
 import { useLocale } from "@/lib/i18n/context";
+import { useTheme } from "@/lib/theme/context";
 import { assetPath, apiUrl } from "@/lib/utils/api-url";
 
 const NAV_LABELS = {
@@ -16,7 +17,11 @@ const NAV_LABELS = {
 
 export function TopBar() {
   const { lang } = useLocale();
+  const { theme, toggleTheme } = useTheme();
   const l = NAV_LABELS[lang];
+  const themeLabel = lang === "zh"
+    ? (theme === "dark" ? "切换至浅色主题" : "切换至深色主题")
+    : (theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
 
   return (
     <header className="ficodes-topbar">
@@ -37,19 +42,16 @@ export function TopBar() {
           </a>
           <a href="https://4i.codes/contact">{l.contact}</a>
           <a href="https://4i.codes/about">{l.about}</a>
-          <span className="ficodes-topbar-theme" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 3v1.6M12 19.4V21M3 12h1.6M19.4 12H21M5.6 5.6l1.13 1.13M17.27 17.27l1.13 1.13M5.6 18.4l1.13-1.13M17.27 6.73l1.13-1.13"></path>
-            </svg>
-          </span>
+          <button
+            type="button"
+            className="ficodes-topbar-theme"
+            onClick={toggleTheme}
+            aria-label={themeLabel}
+            aria-pressed={theme === "dark"}
+            title={themeLabel}
+          >
+            {theme === "dark" ? <Sun /> : <Moon />}
+          </button>
         </nav>
       </div>
     </header>

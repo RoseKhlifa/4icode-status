@@ -23,7 +23,7 @@ const STATUS_COLOR: Record<HealthStatus, string> = {
   error: "bg-rose-600",
 };
 
-const EMPTY_COLOR = "bg-black/10";
+const EMPTY_COLOR = "bg-foreground/10";
 
 interface StatusStripProps {
   items: CheckResult[];
@@ -112,4 +112,3 @@ export function StatusStrip({ items, slots = 90, className }: StatusStripProps) 
     </div>
   );
 }
-
